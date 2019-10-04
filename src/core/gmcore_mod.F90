@@ -11,6 +11,7 @@ module gmcore_mod
   use static_mod
   use tend_mod
   use operators_mod
+  use reduce_mod
   use debug_mod
 
   implicit none
@@ -62,6 +63,7 @@ contains
     call create_static()
     call create_tends()
     call history_init()
+    call reduce_init()
 
     select case (time_scheme)
     case ('predict_correct')
@@ -185,6 +187,7 @@ contains
     integer i, j
 
     call operators_prepare(state)
+    call reduce_run(state)
 
     select case (pass)
     case (all_pass)

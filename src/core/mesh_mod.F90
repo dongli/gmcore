@@ -615,7 +615,7 @@ contains
 
   subroutine create_meshes()
 
-    call mesh%init(num_lon, num_lat)
+    call mesh%init(num_lon, num_lat, halo_width=4)
 
   end subroutine create_meshes
 

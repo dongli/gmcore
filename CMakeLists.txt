@@ -59,6 +59,7 @@ set(source_files
   src/core/pv_mod.F90
   src/core/ke_mod.F90
   src/core/operators_mod.F90
+  src/core/reduce_mod.F90
   src/core/gmcore_mod.F90
   src/tests/swm/rossby_haurwitz_wave_test_mod.F90
   src/tests/swm/mountain_zonal_flow_test_mod.F90
