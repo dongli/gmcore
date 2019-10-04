@@ -5,6 +5,7 @@ module reduce_mod
   use namelist_mod
   use sphere_geometry_mod
   use mesh_mod
+  use static_mod
   use state_mod
   use parallel_mod
 
@@ -61,6 +62,13 @@ module reduce_mod
   type(reduced_mesh_type), allocatable :: reduced_full_mesh(:)
   type(reduced_mesh_type), allocatable :: reduced_half_mesh(:)
 
+  type reduced_static_type
+    real(r8), allocatable, dimension(:,:,:) :: ghs
+  end type reduced_static_type
+
+  type(reduced_static_type), allocatable :: reduced_full_static(:)
+  type(reduced_static_type), allocatable :: reduced_half_static(:)
+
   type reduced_state_type
     ! Prognostic variables
     real(r8), allocatable, dimension(:,:,:) :: u
@@ -88,6 +96,8 @@ contains
 
     integer j, full_j, half_j
 
+    ! --------------------------------------------------------------------------
+    !                                  MESH
     if (allocated(reduced_full_mesh)) deallocate(reduced_full_mesh)
     if (allocated(reduced_half_mesh)) deallocate(reduced_half_mesh)
     allocate(reduced_full_mesh(mesh%full_lat_start_idx:mesh%full_lat_end_idx))
@@ -122,6 +132,47 @@ contains
       end if
     end do
 
+    ! --------------------------------------------------------------------------
+    !                               STATIC
+    if (allocated(reduced_full_static)) deallocate(reduced_full_static)
+    if (allocated(reduced_half_static)) deallocate(reduced_half_static)
+    allocate(reduced_full_static(mesh%full_lat_start_idx:mesh%full_lat_end_idx))
+    allocate(reduced_half_static(mesh%half_lat_start_idx:mesh%half_lat_end_idx))
+
+    do j = 1, size(reduce_factors)
+      if (reduce_factors(j) == 0) exit
+      if (mesh%has_south_pole()) then
+#ifdef STAGGER_V_ON_POLE
+        full_j = mesh%full_lat_start_idx+j-1
+        half_j = mesh%half_lat_start_idx+j
+#else
+        full_j = mesh%full_lat_start_idx+j
+        half_j = mesh%half_lat_start_idx+j-1
+#endif
+        call allocate_reduced_static(reduced_full_mesh(full_j), reduced_full_static(full_j))
+        call allocate_reduced_static(reduced_half_mesh(half_j), reduced_half_static(half_j))
+      end if
+      if (mesh%has_north_pole()) then
+#ifdef STAGGER_V_ON_POLE
+        full_j = mesh%full_lat_end_idx-j+1
+        half_j = mesh%half_lat_end_idx-j
+#else
+        full_j = mesh%full_lat_end_idx-j
+        half_j = mesh%half_lat_end_idx-j+1
+#endif
+        call allocate_reduced_static(reduced_full_mesh(full_j), reduced_full_static(full_j))
+        call allocate_reduced_static(reduced_half_mesh(half_j), reduced_half_static(half_j))
+      end if
+    end do
+    do j = mesh%full_lat_start_idx, mesh%full_lat_end_idx
+      call reduce_static(j, mesh, static, reduced_full_mesh(j), reduced_full_static(j))
+    end do
+    do j = mesh%half_lat_start_idx, mesh%half_lat_end_idx
+      call reduce_static(j, mesh, static, reduced_half_mesh(j), reduced_half_static(j))
+    end do
+
+    ! --------------------------------------------------------------------------
+    !                               STATE
     if (allocated(reduced_full_state)) deallocate(reduced_full_state)
     if (allocated(reduced_half_state)) deallocate(reduced_half_state)
     allocate(reduced_full_state(mesh%full_lat_start_idx:mesh%full_lat_end_idx))
@@ -137,8 +188,8 @@ contains
         full_j = mesh%full_lat_start_idx+j
         half_j = mesh%half_lat_start_idx+j-1
 #endif
-        call allocate_reduced_array(reduced_full_mesh(full_j), reduced_full_state(full_j))
-        call allocate_reduced_array(reduced_half_mesh(half_j), reduced_half_state(half_j))
+        call allocate_reduced_state(reduced_full_mesh(full_j), reduced_full_state(full_j))
+        call allocate_reduced_state(reduced_half_mesh(half_j), reduced_half_state(half_j))
       end if
       if (mesh%has_north_pole()) then
 #ifdef STAGGER_V_ON_POLE
@@ -148,8 +199,8 @@ contains
         full_j = mesh%full_lat_end_idx-j
         half_j = mesh%half_lat_end_idx-j+1
 #endif
-        call allocate_reduced_array(reduced_full_mesh(full_j), reduced_full_state(full_j))
-        call allocate_reduced_array(reduced_half_mesh(half_j), reduced_half_state(half_j))
+        call allocate_reduced_state(reduced_full_mesh(full_j), reduced_full_state(full_j))
+        call allocate_reduced_state(reduced_half_mesh(half_j), reduced_half_state(half_j))
       end if
     end do
 
@@ -164,6 +215,8 @@ contains
 
     do j = state%mesh%full_lat_start_idx, state%mesh%full_lat_end_idx
       call reduce_state(j, state%mesh, state, reduced_full_mesh(j), reduced_full_state(j))
+    end do
+    do j = state%mesh%half_lat_start_idx, state%mesh%half_lat_end_idx
       call reduce_state(j, state%mesh, state, reduced_half_mesh(j), reduced_half_state(j))
     end do
     stop
@@ -277,11 +330,19 @@ contains
 
   end subroutine reduce_mesh
 
-  subroutine allocate_reduced_array(reduced_mesh, reduced_state)
+  subroutine allocate_reduced_static(reduced_mesh, reduced_static)
+
+    type(reduced_mesh_type), intent(in) :: reduced_mesh
+    type(reduced_static_type), intent(inout) :: reduced_static
+
+    allocate(reduced_static%ghs(reduced_mesh%full_lon_lb:reduced_mesh%full_lon_ub,-1:1,reduced_mesh%reduce_factor))
+
+  end subroutine allocate_reduced_static
+
+  subroutine allocate_reduced_state(reduced_mesh, reduced_state)
 
     type(reduced_mesh_type), intent(in) :: reduced_mesh
     type(reduced_state_type), intent(inout) :: reduced_state
-
 
     allocate(reduced_state%u       (reduced_mesh%half_lon_lb:reduced_mesh%half_lon_ub,-2:2,reduced_mesh%reduce_factor))
     allocate(reduced_state%v       (reduced_mesh%full_lon_lb:reduced_mesh%full_lon_ub,-2:2,reduced_mesh%reduce_factor))
@@ -297,7 +358,41 @@ contains
     allocate(reduced_state%mf_lon_t(reduced_mesh%half_lon_lb:reduced_mesh%half_lon_ub,-2:2,reduced_mesh%reduce_factor))
     allocate(reduced_state%mf_lat_t(reduced_mesh%half_lon_lb:reduced_mesh%half_lon_ub,-2:2,reduced_mesh%reduce_factor))
 
-  end subroutine allocate_reduced_array
+  end subroutine allocate_reduced_state
+
+  subroutine reduce_static(j, raw_mesh, raw_static, reduced_mesh, reduced_static)
+
+    integer, intent(in) :: j
+    type(mesh_type), intent(in) :: raw_mesh
+    type(static_type), intent(in) :: raw_static
+    type(reduced_mesh_type), intent(in) :: reduced_mesh
+    type(reduced_static_type), intent(inout) :: reduced_static
+
+    integer buf_j, move, raw_i, i
+
+    if (reduced_mesh%reduce_factor == 0) return
+    do buf_j = -1, 1
+      do move = 1, reduced_mesh%reduce_factor
+        call reduce_array(j, move, raw_mesh, raw_static%ghs(:,j+buf_j), reduced_mesh, reduced_static%ghs(:,buf_j,move))
+      end do
+    end do
+
+    ! ! Check results.
+    ! if (j == 88) then
+    !   i = reduced_mesh%full_lon_start_idx - 1
+    !   do raw_i = raw_mesh%full_lon_start_idx, raw_mesh%full_lon_end_idx
+    !     write(*, '(I8, F20.10)', advance='no') raw_i, raw_static%ghs(raw_i,j)
+    !     if (mod(raw_i, reduced_mesh%reduce_factor) == 1) then
+    !       i = i + 1
+    !       write(*, '(I11, F20.10)') i, reduced_static%ghs(i,0,1)
+    !     else
+    !       write(*, '(I11)') i
+    !     end if
+    !   end do
+    !   stop
+    ! end if
+
+  end subroutine reduce_static
 
   subroutine reduce_state(j, raw_mesh, raw_state, reduced_mesh, reduced_state)
 
@@ -333,10 +428,10 @@ contains
     if (j == 88) then
       i = reduced_mesh%full_lon_start_idx - 1
       do raw_i = raw_mesh%full_lon_start_idx, raw_mesh%full_lon_end_idx
-        write(*, '(I8, F20.10)', advance='no') raw_i, raw_state%pv(raw_i,j)
+        write(*, '(I8, F20.10)', advance='no') raw_i, raw_state%mf_lon_n(raw_i,j)
         if (mod(raw_i, reduced_mesh%reduce_factor) == 1) then
           i = i + 1
-          write(*, '(I11, F20.10)') i, reduced_state%pv(i,0,1)
+          write(*, '(I11, F20.10)') i, reduced_state%mf_lon_n(i,0,1)
         else
           write(*, '(I11)') i
         end if
@@ -413,8 +508,8 @@ contains
     ! PV on edge
     ! TODO: Here we need to implement APVM.
 
-    call parallel_fill_halo(reduced_mesh%halo_width, reduced_state%mf_lon_n(:,0,move))
-    call parallel_fill_halo(reduced_mesh%halo_width, reduced_state%mf_lat_n(:,0,move))
+    call parallel_fill_halo(reduced_mesh%halo_width, reduced_state%mf_lon_n(:,buf_j,move))
+    call parallel_fill_halo(reduced_mesh%halo_width, reduced_state%mf_lat_n(:,buf_j,move))
 
   end subroutine diagnose_1
 
@@ -441,6 +536,9 @@ contains
 #else
 #endif
     end do
+
+    call parallel_fill_halo(reduced_mesh%halo_width, reduced_state%mf_lon_t(:,buf_j,move))
+    call parallel_fill_halo(reduced_mesh%halo_width, reduced_state%mf_lat_t(:,buf_j,move))
 
   end subroutine diagnose_2
 
