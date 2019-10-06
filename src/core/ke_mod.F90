@@ -63,7 +63,7 @@ contains
     end if
 #endif
 
-    call parallel_fill_halo(state%mesh, state%ke_cell, all_halo=.true.)
+    call parallel_fill_halo(state%mesh, state%ke_cell)
 
   end subroutine calc_ke_on_cell
 

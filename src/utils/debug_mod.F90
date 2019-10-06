@@ -24,12 +24,12 @@ contains
     type(mesh_type), pointer :: mesh
     real(r8) ip_coriolis
     real(r8) ip_energe_gradient
-    real(r8) ip_div_mass_flux
+    real(r8) ip_mf_div
 
     mesh => state%mesh
     ip_coriolis = 0.0d0
     ip_energe_gradient = 0.0d0
-    ip_div_mass_flux = 0.0d0
+    ip_mf_div = 0.0d0
 
     do j = mesh%full_lat_start_idx_no_pole, mesh%full_lat_end_idx_no_pole
       do i = mesh%half_lon_start_idx, mesh%half_lon_end_idx
@@ -47,14 +47,14 @@ contains
 
     do j = mesh%full_lat_start_idx, mesh%full_lat_end_idx
       do i = mesh%full_lon_start_idx, mesh%full_lon_end_idx
-        ip_energe_gradient = ip_energe_gradient + tend%div_mass_flux(i,j) * (state%gd(i,j) + static%ghs(i,j)) * mesh%cell_area(j)
-        ip_div_mass_flux = ip_div_mass_flux + tend%div_mass_flux(i,j) * mesh%cell_area(j)
+        ip_energe_gradient = ip_energe_gradient + tend%mf_div(i,j) * (state%gd(i,j) + static%ghs(i,j)) * mesh%cell_area(j)
+        ip_mf_div = ip_mf_div + tend%mf_div(i,j) * mesh%cell_area(j)
       end do
     end do
 
     call log_add_diag('coriolis', ip_coriolis / radius**2)
     call log_add_diag('energy_gradient', ip_energe_gradient / radius**2)
-    call log_add_diag('div_mass_flux', ip_div_mass_flux / radius**2)
+    call log_add_diag('mf_div', ip_mf_div / radius**2)
 
   end subroutine debug_check_space_operators
 

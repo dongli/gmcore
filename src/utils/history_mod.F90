@@ -174,7 +174,7 @@ contains
     call io_output('h1', 'qhu'      , tend%qhu             (1:mesh%num_full_lon,1:mesh%num_half_lat))
     call io_output('h1', 'dEdlon'   , tend%dEdlon          (1:mesh%num_half_lon,1:mesh%num_full_lat))
     call io_output('h1', 'dEdlat'   , tend%dEdlat          (1:mesh%num_full_lon,1:mesh%num_half_lat))
-    call io_output('h1', 'mfd'      , tend%div_mass_flux   (1:mesh%num_full_lon,1:mesh%num_full_lat))
+    call io_output('h1', 'mfd'      , tend%mf_div          (1:mesh%num_full_lon,1:mesh%num_full_lat))
     call io_output('h1', 'us'       , state%u              (1:mesh%num_half_lon,1:mesh%num_full_lat))
     call io_output('h1', 'vs'       , state%v              (1:mesh%num_full_lon,1:mesh%num_half_lat))
     call io_output('h1', 'hv'       , state%m_vtx   (1:mesh%num_half_lon,1:mesh%num_half_lat))

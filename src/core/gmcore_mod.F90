@@ -154,18 +154,14 @@ contains
     state%total_av = 0.0_r8
     do j = state%mesh%half_lat_start_idx, state%mesh%half_lat_end_idx
       do i = state%mesh%half_lon_start_idx, state%mesh%half_lon_end_idx
-        state%total_av = state%total_av + &
-                                         state%m_vtx(i,j) * state%pv(i,j) * &
-                                         state%mesh%vertex_area(j)
+        state%total_av = state%total_av + state%m_vtx(i,j) * state%pv(i,j) * state%mesh%vertex_area(j)
       end do
     end do
 
     state%total_pe = 0.0_r8
     do j = state%mesh%half_lat_start_idx, state%mesh%half_lat_end_idx
       do i = state%mesh%half_lon_start_idx, state%mesh%half_lon_end_idx
-        state%total_pe = state%total_pe + &
-                                          state%m_vtx(i,j) * state%pv(i,j)**2 * 0.5_r8 * &
-                                          state%mesh%vertex_area(j)
+        state%total_pe = state%total_pe + state%m_vtx(i,j) * state%pv(i,j)**2 * 0.5_r8 * state%mesh%vertex_area(j)
       end do
     end do
 
@@ -209,7 +205,7 @@ contains
 
       do j = state%mesh%full_lat_start_idx, state%mesh%full_lat_end_idx
         do i = state%mesh%full_lon_start_idx, state%mesh%full_lon_end_idx
-          tend%dgd(i,j) = - tend%div_mass_flux(i,j) * g
+          tend%dgd(i,j) = - tend%mf_div(i,j) * g
         end do
       end do
     case (slow_pass)
@@ -229,7 +225,7 @@ contains
 
       tend%dEdlon = 0.0_r8
       tend%dEdlat = 0.0_r8
-      tend%div_mass_flux = 0.0_r8
+      tend%mf_div = 0.0_r8
       tend%dgd = 0.0_r8
     case (fast_pass)
       call energy_gradient_operator(static, state, tend)
@@ -249,7 +245,7 @@ contains
 
       do j = state%mesh%full_lat_start_idx, state%mesh%full_lat_end_idx
         do i = state%mesh%full_lon_start_idx, state%mesh%full_lon_end_idx
-          tend%dgd(i,j) = - tend%div_mass_flux(i,j) * g
+          tend%dgd(i,j) = - tend%mf_div(i,j) * g
         end do
       end do
 
@@ -357,9 +353,9 @@ contains
       end do
     end do
 
-    call parallel_fill_halo(new_state%mesh, new_state%gd(:,:), all_halo=.true.)
-    call parallel_fill_halo(new_state%mesh, new_state%u (:,:), all_halo=.true.)
-    call parallel_fill_halo(new_state%mesh, new_state%v (:,:), all_halo=.true.)
+    call parallel_fill_halo(new_state%mesh, new_state%gd(:,:))
+    call parallel_fill_halo(new_state%mesh, new_state%u (:,:))
+    call parallel_fill_halo(new_state%mesh, new_state%v (:,:))
 
     ! Do not forget to synchronize the mass on edge and vertex for diagnosing!
     call calc_mass_on_edge(new_state)

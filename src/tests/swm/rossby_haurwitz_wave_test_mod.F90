@@ -54,7 +54,7 @@ contains
         states(1)%u(i,j) = radius * omg * (a + b - c)
       end do
     end do
-    call parallel_fill_halo(mesh, states(1)%u, all_halo=.true.)
+    call parallel_fill_halo(mesh, states(1)%u)
 
     do j = mesh%half_lat_start_idx, mesh%half_lat_end_idx
       cos_lat = mesh%half_cos_lat(j)
@@ -65,7 +65,7 @@ contains
         states(1)%v(i,j) = - radius * omg * a
       end do
     end do
-    call parallel_fill_halo(mesh, states(1)%v, all_halo=.true.)
+    call parallel_fill_halo(mesh, states(1)%v)
 
     do j = mesh%full_lat_start_idx, mesh%full_lat_end_idx
       cos_lat = mesh%full_cos_lat(j)
@@ -79,7 +79,7 @@ contains
         states(1)%gd(i,j) = gd0 + radius**2 * (a + b * cos(R * lon) + c * cos(2 * R * lon))
       end do
     end do
-    call parallel_fill_halo(mesh, states(1)%gd, all_halo=.true.)
+    call parallel_fill_halo(mesh, states(1)%gd)
 
   end subroutine rossby_haurwitz_wave_test_set_initial_condition
 

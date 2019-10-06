@@ -9,7 +9,7 @@ if (STAGGER_V_ON_POLE)
 endif ()
 
 if (CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
-  set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -ffpe-summary=none -fdefault-real-8 -ffree-line-length-none -Ofast -fopenmp")
+  set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -ffpe-summary=none -ffree-line-length-none -Ofast -flto -fopenmp")
 endif ()
 
 find_package(MPI)

@@ -35,8 +35,8 @@ module time_mod
   ! Namelist parameters
   integer, public :: start_time_array(5) = 0
   integer, public :: end_time_array(5) = 0
-  integer, public :: run_hours = 0
-  integer, public :: run_days = 0
+  real(8), public :: run_hours = 0
+  real(8), public :: run_days = 0
   real(8), public :: dt_in_seconds = 0.0
 
   type(datetime_type) start_time

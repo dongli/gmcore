@@ -100,7 +100,7 @@ contains
       end if
     end if
 #endif
-    call parallel_fill_halo(state%mesh, state%pv, all_halo=.true.)
+    call parallel_fill_halo(state%mesh, state%pv)
 
   end subroutine calc_pv_on_vertex
 
@@ -116,7 +116,7 @@ contains
         state%dpv_lon_t(i,j) = state%pv(i,j) - state%pv(i-1,j)
       end do
     end do
-    call parallel_fill_halo(state%mesh, state%dpv_lon_t, all_halo=.true.)
+    call parallel_fill_halo(state%mesh, state%dpv_lon_t)
 
     do j = state%mesh%full_lat_start_idx_no_pole, state%mesh%full_lat_end_idx_no_pole
       do i = state%mesh%half_lon_start_idx, state%mesh%half_lon_end_idx
@@ -127,7 +127,7 @@ contains
 #endif
       end do
     end do
-    call parallel_fill_halo(state%mesh, state%dpv_lat_t, all_halo=.true.)
+    call parallel_fill_halo(state%mesh, state%dpv_lat_t)
 
     ! Normal pv difference
     do j = state%mesh%half_lat_start_idx_no_pole, state%mesh%half_lat_end_idx_no_pole
@@ -178,8 +178,8 @@ contains
       end do 
     end do 
 
-    call parallel_fill_halo(state%mesh, state%pv_lon, all_halo = .true.)
-    call parallel_fill_halo(state%mesh, state%pv_lat, all_halo = .true.)
+    call parallel_fill_halo(state%mesh, state%pv_lon)
+    call parallel_fill_halo(state%mesh, state%pv_lat)
 
   end subroutine calc_pv_on_edge_midpoint
 
@@ -218,8 +218,8 @@ contains
       end do
     end do
 
-    call parallel_fill_halo(state%mesh, state%pv_lon, all_halo = .true.)
-    call parallel_fill_halo(state%mesh, state%pv_lat, all_halo = .true.)
+    call parallel_fill_halo(state%mesh, state%pv_lon)
+    call parallel_fill_halo(state%mesh, state%pv_lat)
 
   end subroutine calc_pv_on_edge_upwind
 
@@ -263,8 +263,8 @@ contains
       end do
     end do
 
-    call parallel_fill_halo(state%mesh, state%pv_lon, all_halo = .true.)
-    call parallel_fill_halo(state%mesh, state%pv_lat, all_halo = .true.)
+    call parallel_fill_halo(state%mesh, state%pv_lon)
+    call parallel_fill_halo(state%mesh, state%pv_lat)
 
   end subroutine calc_pv_on_edge_apvm
 
@@ -313,8 +313,8 @@ contains
       end do
     end do
 
-    call parallel_fill_halo(state%mesh, state%pv_lon, all_halo = .true.)
-    call parallel_fill_halo(state%mesh, state%pv_lat, all_halo = .true.)
+    call parallel_fill_halo(state%mesh, state%pv_lon)
+    call parallel_fill_halo(state%mesh, state%pv_lat)
 
   end subroutine calc_pv_on_edge_scale_aware_apvm
 

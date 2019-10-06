@@ -39,7 +39,7 @@ contains
       end do
     end do
 
-    call parallel_fill_halo(states(1)%mesh, states(1)%u, all_halo=.true.)
+    call parallel_fill_halo(states(1)%mesh, states(1)%u)
 
     do j = states(1)%mesh%half_lat_start_idx, states(1)%mesh%half_lat_end_idx
       do i = states(1)%mesh%full_lon_start_idx, states(1)%mesh%full_lon_end_idx
@@ -48,7 +48,7 @@ contains
       end do
     end do
 
-    call parallel_fill_halo(states(1)%mesh, states(1)%v, all_halo=.true.)
+    call parallel_fill_halo(states(1)%mesh, states(1)%v)
 
     do j = states(1)%mesh%full_lat_start_idx, states(1)%mesh%full_lat_end_idx
       cos_lat = mesh%full_cos_lat(j)
@@ -59,7 +59,7 @@ contains
       end do
     end do
 
-    call parallel_fill_halo(states(1)%mesh, states(1)%gd, all_halo=.true.)
+    call parallel_fill_halo(states(1)%mesh, states(1)%gd)
 
   end subroutine steady_geostrophic_flow_test_set_initial_condition
 

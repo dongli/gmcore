@@ -22,7 +22,7 @@ module tend_mod
     real(r8), allocatable, dimension(:,:) :: qhu
     real(r8), allocatable, dimension(:,:) :: dEdlon
     real(r8), allocatable, dimension(:,:) :: dEdlat
-    real(r8), allocatable, dimension(:,:) :: div_mass_flux
+    real(r8), allocatable, dimension(:,:) :: mf_div
   contains
     procedure :: init => tend_init
     procedure :: clear => tend_clear
@@ -55,14 +55,14 @@ contains
 
     this%mesh => mesh
 
-    call allocate_array(mesh, this%du           , half_lon=.true., full_lat=.true.)
-    call allocate_array(mesh, this%dv           , full_lon=.true., half_lat=.true.)
-    call allocate_array(mesh, this%dgd          , full_lon=.true., full_lat=.true.)
-    call allocate_array(mesh, this%qhu          , half_lon=.true., full_lat=.true.)
-    call allocate_array(mesh, this%qhv          , full_lon=.true., half_lat=.true.)
-    call allocate_array(mesh, this%dEdlon       , half_lon=.true., full_lon=.true.)
-    call allocate_array(mesh, this%dEdlat       , full_lon=.true., half_lon=.true.)
-    call allocate_array(mesh, this%div_mass_flux, full_lon=.true., full_lat=.true.)
+    call allocate_array(mesh, this%du    , half_lon=.true., full_lat=.true.)
+    call allocate_array(mesh, this%dv    , full_lon=.true., half_lat=.true.)
+    call allocate_array(mesh, this%dgd   , full_lon=.true., full_lat=.true.)
+    call allocate_array(mesh, this%qhu   , half_lon=.true., full_lat=.true.)
+    call allocate_array(mesh, this%qhv   , full_lon=.true., half_lat=.true.)
+    call allocate_array(mesh, this%dEdlon, half_lon=.true., full_lon=.true.)
+    call allocate_array(mesh, this%dEdlat, full_lon=.true., half_lon=.true.)
+    call allocate_array(mesh, this%mf_div, full_lon=.true., full_lat=.true.)
 
   end subroutine tend_init
 
@@ -70,14 +70,14 @@ contains
 
     class(tend_type), intent(inout) :: this
 
-    if (allocated(this%du           )) deallocate(this%du           )
-    if (allocated(this%dv           )) deallocate(this%dv           )
-    if (allocated(this%dgd          )) deallocate(this%dgd          )
-    if (allocated(this%qhu          )) deallocate(this%qhu          )
-    if (allocated(this%qhv          )) deallocate(this%qhv          )
-    if (allocated(this%dEdlon       )) deallocate(this%dEdlon       )
-    if (allocated(this%dEdlat       )) deallocate(this%dEdlat       )
-    if (allocated(this%div_mass_flux)) deallocate(this%div_mass_flux)
+    if (allocated(this%du    )) deallocate(this%du    )
+    if (allocated(this%dv    )) deallocate(this%dv    )
+    if (allocated(this%dgd   )) deallocate(this%dgd   )
+    if (allocated(this%qhu   )) deallocate(this%qhu   )
+    if (allocated(this%qhv   )) deallocate(this%qhv   )
+    if (allocated(this%dEdlon)) deallocate(this%dEdlon)
+    if (allocated(this%dEdlat)) deallocate(this%dEdlat)
+    if (allocated(this%mf_div)) deallocate(this%mf_div)
 
   end subroutine tend_clear
 

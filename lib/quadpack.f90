@@ -447,15 +447,15 @@ subroutine qage ( f, a, b, epsabs, epsrel, key, limit, result, abserr, neval, &
   ier = 0
   neval = 0
   last = 0
-  result = 0.0E+00
-  abserr = 0.0E+00
+  result = 0.0D+00
+  abserr = 0.0D+00
   alist(1) = a
   blist(1) = b
-  rlist(1) = 0.0E+00
-  elist(1) = 0.0E+00
+  rlist(1) = 0.0D+00
+  elist(1) = 0.0D+00
   iord(1) = 0
 
-  if ( epsabs < 0.0E+00 .and. epsrel < 0.0E+00 ) then
+  if ( epsabs < 0.0D+00 .and. epsrel < 0.0D+00 ) then
     ier = 6
     return
   end if
@@ -492,7 +492,7 @@ subroutine qage ( f, a, b, epsabs, epsrel, key, limit, result, abserr, neval, &
 !
   errbnd = max ( epsabs, epsrel * abs ( result ) )
 
-  if ( abserr <= 5.0E+01 * epsilon ( defabs ) * defabs .and. &
+  if ( abserr <= 5.0D+01 * epsilon ( defabs ) * defabs .and. &
     errbnd < abserr ) then
     ier = 2
   end if
@@ -503,7 +503,7 @@ subroutine qage ( f, a, b, epsabs, epsrel, key, limit, result, abserr, neval, &
 
   if ( ier /= 0 .or. &
     ( abserr <= errbnd .and. abserr /= resabs ) .or. &
-    abserr == 0.0E+00 ) then
+    abserr == 0.0D+00 ) then
 
     if ( keyf /= 1 ) then
       neval = (10*keyf+1) * (2*neval+1)
@@ -573,8 +573,8 @@ subroutine qage ( f, a, b, epsabs, epsrel, key, limit, result, abserr, neval, &
 
     if ( defab1 /= error1 .and. defab2 /= error2 ) then
 
-      if ( abs ( rlist(maxerr) - area12 ) <= 1.0E-05 * abs ( area12 ) &
-        .and. 9.9E-01 * errmax <= erro12 ) then
+      if ( abs ( rlist(maxerr) - area12 ) <= 1.0D-05 * abs ( area12 ) &
+        .and. 9.9D-01 * errmax <= erro12 ) then
         iroff1 = iroff1 + 1
       end if
 
@@ -606,8 +606,8 @@ subroutine qage ( f, a, b, epsabs, epsrel, key, limit, result, abserr, neval, &
 !  Set error flag in the case of bad integrand behavior
 !  at a point of the integration range.
 !
-      if ( max ( abs ( a1 ), abs ( b2 ) ) <= ( 1.0E+00 + c * 1.0E+03 * &
-        epsilon ( a1 ) ) * ( abs ( a2 ) + 1.0E+04 * tiny ( a2 ) ) ) then
+      if ( max ( abs ( a1 ), abs ( b2 ) ) <= ( 1.0D+00 + c * 1.0D+03 * &
+        epsilon ( a1 ) ) * ( abs ( a2 ) + 1.0D+04 * tiny ( a2 ) ) ) then
         ier = 3
       end if
 
@@ -854,15 +854,15 @@ subroutine qagi ( f, bound, inf, epsabs, epsrel, result, abserr, neval, ier )
   ier = 0
   neval = 0
   last = 0
-  result = 0.0E+00
-  abserr = 0.0E+00
-  alist(1) = 0.0E+00
-  blist(1) = 1.0E+00
-  rlist(1) = 0.0E+00
-  elist(1) = 0.0E+00
+  result = 0.0D+00
+  abserr = 0.0D+00
+  alist(1) = 0.0D+00
+  blist(1) = 1.0D+00
+  rlist(1) = 0.0D+00
+  elist(1) = 0.0D+00
   iord(1) = 0
 
-  if ( epsabs < 0.0E+00 .and. epsrel < 0.0E+00 ) then
+  if ( epsabs < 0.0D+00 .and. epsrel < 0.0D+00 ) then
     ier = 6
     return
   end if
@@ -875,12 +875,12 @@ subroutine qagi ( f, bound, inf, epsabs, epsrel, result, abserr, neval, ier )
 !  i2 = integral of f over (0,+infinity).
 !
   if ( inf == 2 ) then
-    boun = 0.0E+00
+    boun = 0.0D+00
   else
     boun = bound
   end if
 
-  call qk15i ( f, boun, inf, 0.0E+00, 1.0E+00, result, abserr, defabs, resabs )
+  call qk15i ( f, boun, inf, 0.0D+00, 1.0D+00, result, abserr, defabs, resabs )
 !
 !  Test on accuracy.
 !
@@ -891,7 +891,7 @@ subroutine qagi ( f, bound, inf, epsabs, epsrel, result, abserr, neval, ier )
   dres = abs ( result )
   errbnd = max ( epsabs, epsrel * dres )
 
-  if ( abserr <= 100.0E+00 * epsilon ( defabs ) * defabs .and. &
+  if ( abserr <= 100.0D+00 * epsilon ( defabs ) * defabs .and. &
     errbnd < abserr ) then
     ier = 2
   end if
@@ -901,7 +901,7 @@ subroutine qagi ( f, bound, inf, epsabs, epsrel, result, abserr, neval, ier )
   end if
 
   if ( ier /= 0 .or. (abserr <= errbnd .and. abserr /= resabs ) .or. &
-    abserr == 0.0E+00 ) go to 130
+    abserr == 0.0D+00 ) go to 130
 !
 !  Initialization.
 !
@@ -922,7 +922,7 @@ subroutine qagi ( f, bound, inf, epsabs, epsrel, result, abserr, neval, ier )
   iroff2 = 0
   iroff3 = 0
 
-  if ( ( 1.0E+00 - 5.0E+01 * epsilon ( defabs ) ) * defabs <= dres ) then
+  if ( ( 1.0D+00 - 5.0D+01 * epsilon ( defabs ) ) * defabs <= dres ) then
     ksgn = 1
   else
     ksgn = -1
@@ -933,7 +933,7 @@ subroutine qagi ( f, bound, inf, epsabs, epsrel, result, abserr, neval, ier )
 !  Bisect the subinterval with nrmax-th largest error estimate.
 !
     a1 = alist(maxerr)
-    b1 = 5.0E-01 * ( alist(maxerr) + blist(maxerr) )
+    b1 = 5.0D-01 * ( alist(maxerr) + blist(maxerr) )
     a2 = b1
     b2 = blist(maxerr)
     erlast = errmax
@@ -950,8 +950,8 @@ subroutine qagi ( f, bound, inf, epsabs, epsrel, result, abserr, neval, ier )
 
     if ( defab1 /= error1 .and. defab2 /= error2 ) then
 
-      if ( abs ( rlist(maxerr) - area12 ) <= 1.0E-05 * abs ( area12 ) &
-        .and. 9.9E-01 * errmax <= erro12 ) then
+      if ( abs ( rlist(maxerr) - area12 ) <= 1.0D-05 * abs ( area12 ) &
+        .and. 9.9D-01 * errmax <= erro12 ) then
 
         if ( extrap ) then
           iroff2 = iroff2 + 1
@@ -992,8 +992,8 @@ subroutine qagi ( f, bound, inf, epsabs, epsrel, result, abserr, neval, ier )
 !  Set error flag in the case of bad integrand behavior
 !  at some points of the integration range.
 !
-    if ( max ( abs(a1), abs(b2) ) <= (1.0E+00 + 1.0E+03 * epsilon ( a1 ) ) * &
-    ( abs(a2) + 1.0E+03 * tiny ( a2 ) )) then
+    if ( max ( abs(a1), abs(b2) ) <= (1.0D+00 + 1.0D+03 * epsilon ( a1 ) ) * &
+    ( abs(a2) + 1.0D+03 * tiny ( a2 ) )) then
       ier = 4
     end if
 !
@@ -1028,7 +1028,7 @@ subroutine qagi ( f, bound, inf, epsabs, epsrel, result, abserr, neval, ier )
     end if
 
     if ( last == 2 ) then
-      small = 3.75E-01
+      small = 3.75D-01
       erlarg = errsum
       ertest = errbnd
       rlist2(2) = area
@@ -1092,7 +1092,7 @@ subroutine qagi ( f, bound, inf, epsabs, epsrel, result, abserr, neval, ier )
     call qextr ( numrl2, rlist2, reseps, abseps, res3la, nres ) 
     ktmin = ktmin+1
 
-    if ( 5 < ktmin .and. abserr < 1.0E-03 * errsum ) then
+    if ( 5 < ktmin .and. abserr < 1.0D-03 * errsum ) then
       ier = 5
     end if
 
@@ -1124,7 +1124,7 @@ subroutine qagi ( f, bound, inf, epsabs, epsrel, result, abserr, neval, ier )
     errmax = elist(maxerr)
     nrmax = 1
     extrap = .false.
-    small = small * 5.0E-01
+    small = small * 5.0D-01
     erlarg = errsum
 
 90  continue
@@ -1149,7 +1149,7 @@ subroutine qagi ( f, bound, inf, epsabs, epsrel, result, abserr, neval, ier )
     ier = 3
   end if
 
-  if ( result /= 0.0E+00 .and. area /= 0.0E+00) then
+  if ( result /= 0.0D+00 .and. area /= 0.0D+00) then
     go to 105
   end if
 
@@ -1157,7 +1157,7 @@ subroutine qagi ( f, bound, inf, epsabs, epsrel, result, abserr, neval, ier )
     go to 115
   end if
 
-  if ( area == 0.0E+00 ) then
+  if ( area == 0.0D+00 ) then
     go to 130
   end if
 
@@ -1174,10 +1174,10 @@ subroutine qagi ( f, bound, inf, epsabs, epsrel, result, abserr, neval, ier )
 110 continue
 
   if ( ksgn == (-1) .and. &
-  max ( abs(result), abs(area) ) <=  defabs * 1.0E-02) go to 130
+  max ( abs(result), abs(area) ) <=  defabs * 1.0D-02) go to 130
 
-  if ( 1.0E-02 > (result/area) .or. &
-    (result/area) > 1.0E+02 .or. &
+  if ( 1.0D-02 > (result/area) .or. &
+    (result/area) > 1.0D+02 .or. &
     errsum > abs(area)) then
     ier = 6
   end if
@@ -1436,12 +1436,12 @@ subroutine qagp ( f, a, b, npts2, points, epsabs, epsrel, result, abserr, &
   ier = 0
   neval = 0
   last = 0
-  result = 0.0E+00
-  abserr = 0.0E+00
+  result = 0.0D+00
+  abserr = 0.0D+00
   alist(1) = a
   blist(1) = b
-  rlist(1) = 0.0E+00
-  elist(1) = 0.0E+00
+  rlist(1) = 0.0D+00
+  elist(1) = 0.0D+00
   iord(1) = 0
   level(1) = 0
   npts = npts2 - 2
@@ -1449,8 +1449,8 @@ subroutine qagp ( f, a, b, npts2, points, epsabs, epsrel, result, abserr, &
   if ( npts2 < 2 ) then
     ier = 6
     return
-  else if ( limit <= npts .or. ( epsabs < 0.0E+00 .and. &
-    epsrel < 0.0E+00) ) then
+  else if ( limit <= npts .or. ( epsabs < 0.0D+00 .and. &
+    epsrel < 0.0D+00) ) then
     ier = 6
     return
   end if
@@ -1459,9 +1459,9 @@ subroutine qagp ( f, a, b, npts2, points, epsabs, epsrel, result, abserr, &
 !  ascending sequence.
 !
   if ( b < a ) then
-    sign = -1.0E+00
+    sign = -1.0D+00
   else
-    sign = +1.0E+00
+    sign = +1.0D+00
   end if
 
   pts(1) = min ( a, b )
@@ -1495,7 +1495,7 @@ subroutine qagp ( f, a, b, npts2, points, epsabs, epsrel, result, abserr, &
 !
 !  Compute first integral and error approximations.
 !
-  resabs = 0.0E+00
+  resabs = 0.0D+00
 
   do i = 1, nint
 
@@ -1505,7 +1505,7 @@ subroutine qagp ( f, a, b, npts2, points, epsabs, epsrel, result, abserr, &
     result = result + area1
     ndin(i) = 0
 
-    if ( error1 == resa .and. error1 /= 0.0E+00 ) then
+    if ( error1 == resa .and. error1 /= 0.0D+00 ) then
       ndin(i) = 1
     end if
 
@@ -1520,7 +1520,7 @@ subroutine qagp ( f, a, b, npts2, points, epsabs, epsrel, result, abserr, &
 
   end do
 
-  errsum = 0.0E+00
+  errsum = 0.0D+00
 
   do i = 1, nint
     if ( ndin(i) == 1 ) then
@@ -1536,7 +1536,7 @@ subroutine qagp ( f, a, b, npts2, points, epsabs, epsrel, result, abserr, &
   dres = abs ( result )
   errbnd = max ( epsabs, epsrel * dres )
 
-  if ( abserr <= 1.0E+02 * epsilon ( resabs ) * resabs .and. &
+  if ( abserr <= 1.0D+02 * epsilon ( resabs ) * resabs .and. &
     abserr > errbnd ) then
     ier = 2
   end if
@@ -1594,7 +1594,7 @@ subroutine qagp ( f, a, b, npts2, points, epsabs, epsrel, result, abserr, &
   ierro = 0
   abserr = huge ( abserr )
 
-  if ( dres >= ( 1.0E+00 - 0.5E+00 * epsilon ( resabs ) ) * resabs ) then
+  if ( dres >= ( 1.0D+00 - 0.5D+00 * epsilon ( resabs ) ) * resabs ) then
     ksgn = 1
   else
     ksgn = -1
@@ -1606,7 +1606,7 @@ subroutine qagp ( f, a, b, npts2, points, epsabs, epsrel, result, abserr, &
 !
     levcur = level(maxerr) + 1
     a1 = alist(maxerr)
-    b1 = 0.5E+00 * ( alist(maxerr) + blist(maxerr) )
+    b1 = 0.5D+00 * ( alist(maxerr) + blist(maxerr) )
     a2 = b1
     b2 = blist(maxerr)
     erlast = errmax
@@ -1624,8 +1624,8 @@ subroutine qagp ( f, a, b, npts2, points, epsabs, epsrel, result, abserr, &
 
     if ( defab1 /= error1 .and. defab2 /= error2 ) then
 
-      if ( abs ( rlist ( maxerr ) - area12 ) <= 1.0E-05 * abs(area12) .and. &
-        erro12 >= 9.9E-01 * errmax ) then
+      if ( abs ( rlist ( maxerr ) - area12 ) <= 1.0D-05 * abs(area12) .and. &
+        erro12 >= 9.9D-01 * errmax ) then
 
         if ( extrap ) then
           iroff2 = iroff2+1
@@ -1667,8 +1667,8 @@ subroutine qagp ( f, a, b, npts2, points, epsabs, epsrel, result, abserr, &
 !  Set error flag in the case of bad integrand behavior
 !  at a point of the integration range
 !
-    if ( max ( abs(a1), abs(b2)) <= ( 1.0E+00 + 1.0E+03 * epsilon ( a1 ) )* &
-    ( abs ( a2 ) + 1.0E+03 * tiny ( a2 ) ) ) then
+    if ( max ( abs(a1), abs(b2)) <= ( 1.0D+00 + 1.0D+03 * epsilon ( a1 ) )* &
+    ( abs ( a2 ) + 1.0D+03 * tiny ( a2 ) ) ) then
       ier = 4
     end if
 !
@@ -1763,7 +1763,7 @@ subroutine qagp ( f, a, b, npts2, points, epsabs, epsrel, result, abserr, &
     call qextr ( numrl2, rlist2, reseps, abseps, res3la, nres )
     ktmin = ktmin+1
 
-    if ( 5 < ktmin .and. abserr < 1.0E-03 * errsum ) then
+    if ( 5 < ktmin .and. abserr < 1.0D-03 * errsum ) then
       ier = 5
     end if
 
@@ -1822,7 +1822,7 @@ subroutine qagp ( f, a, b, npts2, points, epsabs, epsrel, result, abserr, &
     ier = 3
   end if
 
-  if ( result /= 0.0E+00 .and. area /= 0.0E+00 ) then
+  if ( result /= 0.0D+00 .and. area /= 0.0D+00 ) then
     go to 175
   end if
 
@@ -1830,7 +1830,7 @@ subroutine qagp ( f, a, b, npts2, points, epsabs, epsrel, result, abserr, &
     go to 190
   end if
 
-  if ( area == 0.0E+00 ) then
+  if ( area == 0.0D+00 ) then
     go to 210
   end if
 
@@ -1847,9 +1847,9 @@ subroutine qagp ( f, a, b, npts2, points, epsabs, epsrel, result, abserr, &
   180 continue
 
   if ( ksgn == (-1) .and. max ( abs(result),abs(area)) <=  &
-    resabs*1.0E-02 ) go to 210
+    resabs*1.0D-02 ) go to 210
 
-  if ( 1.0E-02 > (result/area) .or. (result/area) > 1.0E+02 .or. &
+  if ( 1.0D-02 > (result/area) .or. (result/area) > 1.0D+02 .or. &
     errsum > abs(area) ) then
     ier = 6
   end if
@@ -2077,14 +2077,14 @@ subroutine qags ( f, a, b, epsabs, epsrel, result, abserr, neval, ier )
   ier = 0
   neval = 0
   last = 0
-  result = 0.0E+00
-  abserr = 0.0E+00
+  result = 0.0D+00
+  abserr = 0.0D+00
   alist(1) = a
   blist(1) = b
-  rlist(1) = 0.0E+00
-  elist(1) = 0.0E+00
+  rlist(1) = 0.0D+00
+  elist(1) = 0.0D+00
 
-  if ( epsabs < 0.0E+00 .and. epsrel < 0.0E+00 ) then
+  if ( epsabs < 0.0D+00 .and. epsrel < 0.0D+00 ) then
     ier = 6
     return
   end if
@@ -2103,7 +2103,7 @@ subroutine qags ( f, a, b, epsabs, epsrel, result, abserr, neval, ier )
   elist(1) = abserr
   iord(1) = 1
 
-  if ( abserr <= 1.0E+02 * epsilon ( defabs ) * defabs .and. &
+  if ( abserr <= 1.0D+02 * epsilon ( defabs ) * defabs .and. &
     abserr > errbnd ) then
     ier = 2
   end if
@@ -2113,7 +2113,7 @@ subroutine qags ( f, a, b, epsabs, epsrel, result, abserr, neval, ier )
   end if
 
   if ( ier /= 0 .or. (abserr <= errbnd .and. abserr /= resabs ) .or. &
-    abserr == 0.0E+00 ) go to 140
+    abserr == 0.0D+00 ) go to 140
 !
 !  Initialization.
 !
@@ -2133,7 +2133,7 @@ subroutine qags ( f, a, b, epsabs, epsrel, result, abserr, neval, ier )
   iroff2 = 0
   iroff3 = 0
 
-  if ( dres >= (1.0E+00 - 5.0E+01* epsilon ( defabs ) ) * defabs ) then
+  if ( dres >= (1.0D+00 - 5.0D+01* epsilon ( defabs ) ) * defabs ) then
     ksgn = 1
   else
     ksgn = -1
@@ -2144,7 +2144,7 @@ subroutine qags ( f, a, b, epsabs, epsrel, result, abserr, neval, ier )
 !  Bisect the subinterval with the nrmax-th largest error estimate.
 !
     a1 = alist(maxerr)
-    b1 = 5.0E-01 * ( alist(maxerr) + blist(maxerr) )
+    b1 = 5.0D-01 * ( alist(maxerr) + blist(maxerr) )
     a2 = b1
     b2 = blist(maxerr)
     erlast = errmax
@@ -2161,8 +2161,8 @@ subroutine qags ( f, a, b, epsabs, epsrel, result, abserr, neval, ier )
 
     if ( defab1 == error1 .or. defab2 == error2 ) go to 15
 
-    if ( abs ( rlist(maxerr) - area12) > 1.0E-05 * abs(area12) &
-      .or. erro12 < 9.9E-01 * errmax ) go to 10
+    if ( abs ( rlist(maxerr) - area12) > 1.0D-05 * abs(area12) &
+      .or. erro12 < 9.9D-01 * errmax ) go to 10
 
     if ( extrap ) then
       iroff2 = iroff2+1
@@ -2202,8 +2202,8 @@ subroutine qags ( f, a, b, epsabs, epsrel, result, abserr, neval, ier )
 !  Set error flag in the case of bad integrand behavior
 !  at a point of the integration range.
 !
-    if ( max ( abs(a1),abs(b2)) <= (1.0E+00+1.0E+03* epsilon ( a1 ) )* &
-      (abs(a2)+1.0E+03* tiny ( a2 ) ) ) then
+    if ( max ( abs(a1),abs(b2)) <= (1.0D+00+1.0D+03* epsilon ( a1 ) )* &
+      (abs(a2)+1.0D+03* tiny ( a2 ) ) ) then
       ier = 4
     end if
 !
@@ -2290,7 +2290,7 @@ subroutine qags ( f, a, b, epsabs, epsrel, result, abserr, neval, ier )
     call qextr ( numrl2, rlist2, reseps, abseps, res3la, nres )
     ktmin = ktmin+1
 
-    if ( ktmin > 5 .and. abserr < 1.0E-03 * errsum ) then
+    if ( ktmin > 5 .and. abserr < 1.0D-03 * errsum ) then
       ier = 5
     end if
 
@@ -2322,13 +2322,13 @@ subroutine qags ( f, a, b, epsabs, epsrel, result, abserr, neval, ier )
     errmax = elist(maxerr)
     nrmax = 1
     extrap = .false.
-    small = small * 5.0E-01
+    small = small * 5.0D-01
     erlarg = errsum
     go to 90
 
 80  continue
 
-    small = abs ( b - a ) * 3.75E-01
+    small = abs ( b - a ) * 3.75D-01
     erlarg = errsum
     ertest = errbnd
     rlist2(2) = area
@@ -2355,12 +2355,12 @@ subroutine qags ( f, a, b, epsabs, epsrel, result, abserr, neval, ier )
     ier = 3
   end if
 
-  if ( result /= 0.0E+00 .and. area /= 0.0E+00 ) then
+  if ( result /= 0.0D+00 .and. area /= 0.0D+00 ) then
     go to 105
   end if
 
   if ( abserr > errsum ) go to 115
-  if ( area == 0.0E+00 ) go to 130
+  if ( area == 0.0D+00 ) go to 130
   go to 110
 
 105 continue
@@ -2372,9 +2372,9 @@ subroutine qags ( f, a, b, epsabs, epsrel, result, abserr, neval, ier )
 110 continue
 
   if ( ksgn == (-1) .and. max ( abs(result),abs(area)) <=  &
-   defabs*1.0E-02 ) go to 130
+   defabs*1.0D-02 ) go to 130
 
-  if ( 1.0E-02 > (result/area) .or. (result/area) > 1.0E+02 &
+  if ( 1.0D-02 > (result/area) .or. (result/area) > 1.0D+02 &
    .or. errsum > abs(area) ) then
     ier = 6
   end if
@@ -2696,11 +2696,11 @@ subroutine qawce ( f, a, b, c, epsabs, epsrel, limit, result, abserr, neval, &
   last = 0
   alist(1) = a
   blist(1) = b
-  rlist(1) = 0.0E+00
-  elist(1) = 0.0E+00
+  rlist(1) = 0.0D+00
+  elist(1) = 0.0D+00
   iord(1) = 0
-  result = 0.0E+00
-  abserr = 0.0E+00
+  result = 0.0D+00
+  abserr = 0.0D+00
 
   if ( c == a  ) then
     ier = 6
@@ -2708,7 +2708,7 @@ subroutine qawce ( f, a, b, c, epsabs, epsrel, limit, result, abserr, neval, &
   else if ( c == b ) then
     ier = 6
     return
-  else if ( epsabs < 0.0E+00 .and. epsrel < 0.0E+00 ) then
+  else if ( epsabs < 0.0D+00 .and. epsrel < 0.0D+00 ) then
     ier = 6
     return
   end if
@@ -2741,7 +2741,7 @@ subroutine qawce ( f, a, b, c, epsabs, epsrel, limit, result, abserr, neval, &
     go to 70
   end if
 
-  if ( abserr < min ( 1.0E-02 * abs(result), errbnd)  ) then
+  if ( abserr < min ( 1.0D-02 * abs(result), errbnd)  ) then
     go to 70
   end if
 !
@@ -2763,15 +2763,15 @@ subroutine qawce ( f, a, b, c, epsabs, epsrel, limit, result, abserr, neval, &
 !  Bisect the subinterval with nrmax-th largest error estimate.
 !
     a1 = alist(maxerr)
-    b1 = 5.0E-01*(alist(maxerr)+blist(maxerr))
+    b1 = 5.0D-01*(alist(maxerr)+blist(maxerr))
     b2 = blist(maxerr)
 
     if ( c <= b1 .and. a1 < c ) then
-      b1 = 5.0E-01*(c+b2)
+      b1 = 5.0D-01*(c+b2)
     end if
 
     if ( b1 < c .and. c < b2 ) then
-      b1 = 5.0E-01 * ( a1 + c )
+      b1 = 5.0D-01 * ( a1 + c )
     end if
 
     a2 = b1
@@ -2791,8 +2791,8 @@ subroutine qawce ( f, a, b, c, epsabs, epsrel, limit, result, abserr, neval, &
     errsum = errsum + erro12 - errmax
     area = area + area12 - rlist(maxerr)
 
-    if ( abs ( rlist(maxerr)-area12) < 1.0E-05 * abs(area12) &
-      .and. erro12 >= 9.9E-01 * errmax .and. krule == 0 ) &
+    if ( abs ( rlist(maxerr)-area12) < 1.0D-05 * abs(area12) &
+      .and. erro12 >= 9.9D-01 * errmax .and. krule == 0 ) &
       iroff1 = iroff1+1
 
     if ( last > 10.and.erro12 > errmax .and. krule == 0 ) then
@@ -2821,8 +2821,8 @@ subroutine qawce ( f, a, b, c, epsabs, epsrel, limit, result, abserr, neval, &
 !  Set error flag in the case of bad integrand behavior at
 !  a point of the integration range.
 !
-      if ( max ( abs(a1), abs(b2) ) <= ( 1.0E+00 + 1.0E+03 * epsilon ( a1 ) ) &
-        *( abs(a2)+1.0E+03* tiny ( a2 ) )) then
+      if ( max ( abs(a1), abs(b2) ) <= ( 1.0D+00 + 1.0D+03 * epsilon ( a1 ) ) &
+        *( abs(a2)+1.0D+03* tiny ( a2 ) )) then
         ier = 3
       end if
 
@@ -2995,8 +2995,8 @@ subroutine qawf ( f, a, omega, integr, epsabs, result, abserr, neval, ier )
 
   ier = 6
   neval = 0
-  result = 0.0E+00
-  abserr = 0.0E+00
+  result = 0.0D+00
+  abserr = 0.0D+00
 
   if ( limlst < 3 .or. maxp1 < 1 ) then
     return
@@ -3269,26 +3269,26 @@ subroutine qawfe ( f, a, omega, integr, epsabs, limlst, limit, maxp1, &
 !
 !  Test on validity of parameters.
 !
-  result = 0.0E+00
-  abserr = 0.0E+00
+  result = 0.0D+00
+  abserr = 0.0D+00
   neval = 0
   lst = 0
   ier = 0
 
   if ( (integr /= 1 .and. integr /= 2 ) .or. &
-    epsabs <= 0.0E+00 .or. &
+    epsabs <= 0.0D+00 .or. &
     limlst < 3 ) then
     ier = 6
     return
   end if
 
-  if ( omega == 0.0E+00 ) then
+  if ( omega == 0.0D+00 ) then
 
     if ( integr == 1 ) then
-      call qagi ( f, 0.0E+00, 1, epsabs, 0.0E+00, result, abserr, neval, ier )
+      call qagi ( f, 0.0D+00, 1, epsabs, 0.0D+00, result, abserr, neval, ier )
     else
-      result = 0.0E+00
-      abserr = 0.0E+00
+      result = 0.0D+00
+      abserr = 0.0D+00
       neval = 0
       ier = 0
     end if
@@ -3313,7 +3313,7 @@ subroutine qawfe ( f, a, omega, integr, epsabs, limlst, limit, maxp1, &
   nres = 0
   c1 = a
   c2 = cycle+a
-  p1 = 1.0E+00 - p
+  p1 = 1.0D+00 - p
   eps = epsabs
 
   if ( epsabs > tiny ( epsabs ) / p1 ) then
@@ -3321,10 +3321,10 @@ subroutine qawfe ( f, a, omega, integr, epsabs, limlst, limit, maxp1, &
   end if
 
   ep = eps
-  fact = 1.0E+00
-  correc = 0.0E+00
-  abserr = 0.0E+00
-  errsum = 0.0E+00
+  fact = 1.0D+00
+  correc = 0.0D+00
+  abserr = 0.0D+00
+  errsum = 0.0D+00
 
   do lst = 1, limlst
 !
@@ -3333,14 +3333,14 @@ subroutine qawfe ( f, a, omega, integr, epsabs, limlst, limit, maxp1, &
 !   dla = lst
     epsa = eps * fact
 
-    call qfour ( f, c1, c2, omega, integr, epsa, 0.0E+00, limit, lst, maxp1, &
+    call qfour ( f, c1, c2, omega, integr, epsa, 0.0D+00, limit, lst, maxp1, &
       rslst(lst), erlst(lst), nev, ierlst(lst), alist, blist, rlist, elist, &
       iord, nnlog, momcom, chebmo )
 
     neval = neval + nev
     fact = fact * p
     errsum = errsum + erlst(lst)
-    drl = 5.0E+01 * abs(rslst(lst))
+    drl = 5.0D+01 * abs(rslst(lst))
 !
 !  Test on accuracy with partial sum.
 !
@@ -3355,7 +3355,7 @@ subroutine qawfe ( f, a, omega, integr, epsabs, limlst, limit, maxp1, &
       ier = 7
     end if
 
-    if ( ier == 7 .and. (errsum+drl) <= correc*1.0E+01.and. lst > 5) go to 80
+    if ( ier == 7 .and. (errsum+drl) <= correc*1.0D+01.and. lst > 5) go to 80
 
     numrl2 = numrl2+1
 
@@ -3384,7 +3384,7 @@ subroutine qawfe ( f, a, omega, integr, epsabs, limlst, limit, maxp1, &
 !
     ktmin = ktmin + 1
 
-    if ( ktmin >= 15 .and. abserr <= 1.0E-03 * (errsum+drl) ) then
+    if ( ktmin >= 15 .and. abserr <= 1.0D-03 * (errsum+drl) ) then
       ier = 9
     end  if
 
@@ -3398,11 +3398,11 @@ subroutine qawfe ( f, a, omega, integr, epsabs, limlst, limit, maxp1, &
 !  sum) or extrapolated result yields the best integral
 !  approximation
 !
-      if ( ( abserr + 1.0E+01 * correc ) <= epsabs ) then
+      if ( ( abserr + 1.0D+01 * correc ) <= epsabs ) then
         exit
       end if
 
-      if ( abserr <= epsabs .and. 1.0E+01 * correc >= epsabs ) then
+      if ( abserr <= epsabs .and. 1.0D+01 * correc >= epsabs ) then
         exit
       end if
 
@@ -3424,19 +3424,19 @@ subroutine qawfe ( f, a, omega, integr, epsabs, limlst, limit, maxp1, &
 !
 !60 continue
 
-  abserr = abserr + 1.0E+01 * correc
+  abserr = abserr + 1.0D+01 * correc
 
   if ( ier == 0 ) then
     return
   end if
 
-  if ( result /= 0.0E+00 .and. psum(numrl2) /= 0.0E+00) go to 70
+  if ( result /= 0.0D+00 .and. psum(numrl2) /= 0.0D+00) go to 70
 
   if ( abserr > errsum ) then
     go to 80
   end if
 
-  if ( psum(numrl2) == 0.0E+00 ) then
+  if ( psum(numrl2) == 0.0D+00 ) then
     return
   end if
 
@@ -3917,16 +3917,16 @@ subroutine qawse ( f, a, b, alfa, beta, integr, epsabs, epsrel, limit, &
   ier = 0
   neval = 0
   last = 0
-  rlist(1) = 0.0E+00
-  elist(1) = 0.0E+00
+  rlist(1) = 0.0D+00
+  elist(1) = 0.0D+00
   iord(1) = 0
-  result = 0.0E+00
-  abserr = 0.0E+00
+  result = 0.0D+00
+  abserr = 0.0D+00
 
   if ( b <= a .or. &
-    (epsabs < 0.0E+00 .and. epsrel < 0.0E+00) .or. &
-    alfa <= (-1.0E+00) .or. &
-    beta <= (-1.0E+00) .or. &
+    (epsabs < 0.0D+00 .and. epsrel < 0.0D+00) .or. &
+    alfa <= (-1.0D+00) .or. &
+    beta <= (-1.0D+00) .or. &
     integr < 1 .or. &
     integr > 4 .or. &
     limit < 2 ) then
@@ -3940,7 +3940,7 @@ subroutine qawse ( f, a, b, alfa, beta, integr, epsabs, epsrel, limit, &
 !
 !  Integrate over the intervals (a,(a+b)/2) and ((a+b)/2,b).
 !
-  centre = 5.0E-01 * ( b + a )
+  centre = 5.0D-01 * ( b + a )
 
   call qc25s ( f, a, b, a, centre, alfa, beta, ri, rj, rg, rh, area1, &
     error1, resas1, integr, nev )
@@ -4006,7 +4006,7 @@ subroutine qawse ( f, a, b, alfa, beta, integr, epsabs, epsrel, limit, &
 !  Bisect the subinterval with largest error estimate.
 !
     a1 = alist(maxerr)
-    b1 = 5.0E-01 * ( alist(maxerr) + blist(maxerr) )
+    b1 = 5.0D-01 * ( alist(maxerr) + blist(maxerr) )
     a2 = b1
     b2 = blist(maxerr)
 
@@ -4034,8 +4034,8 @@ subroutine qawse ( f, a, b, alfa, beta, integr, epsabs, epsrel, limit, &
 
       if ( resas1 /= error1 .and. resas2 /= error2 ) then
 
-        if ( abs ( rlist(maxerr) - area12 ) < 1.0E-05 * abs ( area12 ) &
-          .and.erro12 >= 9.9E-01*errmax ) then
+        if ( abs ( rlist(maxerr) - area12 ) < 1.0D-05 * abs ( area12 ) &
+          .and.erro12 >= 9.9D-01*errmax ) then
           iroff1 = iroff1 + 1
         end if
 
@@ -4072,8 +4072,8 @@ subroutine qawse ( f, a, b, alfa, beta, integr, epsabs, epsrel, limit, &
 !  Set error flag in the case of bad integrand behavior
 !  at interior points of integration range.
 !
-      if ( max ( abs(a1),abs(b2)) <= (1.0E+00+1.0E+03* epsilon ( a1 ) )* &
-        ( abs(a2) + 1.0E+03* tiny ( a2) )) then
+      if ( max ( abs(a1),abs(b2)) <= (1.0D+00+1.0D+03* epsilon ( a1 ) )* &
+        ( abs(a2) + 1.0D+03* tiny ( a2) )) then
         ier = 3
       end if
 
@@ -4219,16 +4219,16 @@ subroutine qc25c ( f, a, b, c, result, abserr, krul, neval )
   real ( kind = 8 ) res24
   real ( kind = 8 ) u
   real ( kind = 8 ), parameter, dimension ( 11 ) :: x = (/ &
-    9.914448613738104E-01, 9.659258262890683E-01, &
-    9.238795325112868E-01, 8.660254037844386E-01, &
-    7.933533402912352E-01, 7.071067811865475E-01, &
-    6.087614290087206E-01, 5.000000000000000E-01, &
-    3.826834323650898E-01, 2.588190451025208E-01, &
-    1.305261922200516E-01 /)
+    9.914448613738104D-01, 9.659258262890683D-01, &
+    9.238795325112868D-01, 8.660254037844386D-01, &
+    7.933533402912352D-01, 7.071067811865475D-01, &
+    6.087614290087206D-01, 5.000000000000000D-01, &
+    3.826834323650898D-01, 2.588190451025208D-01, &
+    1.305261922200516D-01 /)
 !
 !  Check the position of C.
 !
-  cc = ( 2.0E+00 * c - b - a ) / ( b - a )
+  cc = ( 2.0D+00 * c - b - a ) / ( b - a )
 !
 !  Apply the 15-point Gauss-Kronrod scheme.
 !
@@ -4245,12 +4245,12 @@ subroutine qc25c ( f, a, b, c, result, abserr, krul, neval )
 !
 !  Use the generalized Clenshaw-Curtis method.
 !
-  hlgth = 5.0E-01 * ( b - a )
-  centr = 5.0E-01 * ( b + a )
+  hlgth = 5.0D-01 * ( b - a )
+  centr = 5.0D-01 * ( b + a )
   neval = 25
-  fval(1) = 5.0E-01 * f(hlgth+centr)
+  fval(1) = 5.0D-01 * f(hlgth+centr)
   fval(13) = f(centr)
-  fval(25) = 5.0E-01 * f(centr-hlgth)
+  fval(25) = 5.0D-01 * f(centr-hlgth)
 
   do i = 2, 12
     u = hlgth * x(i-1)
@@ -4266,16 +4266,16 @@ subroutine qc25c ( f, a, b, c, result, abserr, krul, neval )
 !  The modified Chebyshev moments are computed by forward
 !  recursion, using AMOM0 and AMOM1 as starting values.
 !
-  amom0 = log ( abs ( ( 1.0E+00 - cc ) / ( 1.0E+00 + cc ) ) )
-  amom1 = 2.0E+00 + cc * amom0
+  amom0 = log ( abs ( ( 1.0D+00 - cc ) / ( 1.0D+00 + cc ) ) )
+  amom1 = 2.0D+00 + cc * amom0
   res12 = cheb12(1) * amom0 + cheb12(2) * amom1
   res24 = cheb24(1) * amom0 + cheb24(2) * amom1
 
   do k = 3, 13
-    amom2 = 2.0E+00 * cc * amom1 - amom0
+    amom2 = 2.0D+00 * cc * amom1 - amom0
     ak22 = ( k - 2 ) * ( k - 2 )
     if ( ( k / 2 ) * 2 == k ) then
-      amom2 = amom2 - 4.0E+00 / ( ak22 - 1.0E+00 )
+      amom2 = amom2 - 4.0D+00 / ( ak22 - 1.0D+00 )
     end if
     res12 = res12 + cheb12(k) * amom2
     res24 = res24 + cheb24(k) * amom2
@@ -4284,10 +4284,10 @@ subroutine qc25c ( f, a, b, c, result, abserr, krul, neval )
   end do
 
   do k = 14, 25
-    amom2 = 2.0E+00 * cc * amom1 - amom0
+    amom2 = 2.0D+00 * cc * amom1 - amom0
     ak22 = ( k - 2 ) * ( k - 2 )
     if ( ( k / 2 ) * 2 == k ) then
-      amom2 = amom2 - 4.0E+00 / ( ak22 - 1.0E+00 )
+      amom2 = amom2 - 4.0D+00 / ( ak22 - 1.0D+00 )
     end if
     res24 = res24 + cheb24(k) * amom2
     amom0 = amom1
@@ -4488,15 +4488,15 @@ subroutine qc25o ( f, a, b, omega, integr, nrmom, maxp1, ksave, result, &
   real ( kind = 8 ) sinpar
   real ( kind = 8 ) v(28)
   real ( kind = 8 ), dimension ( 11 ) :: x = (/ &
-    9.914448613738104E-01,     9.659258262890683E-01, &
-    9.238795325112868E-01,     8.660254037844386E-01, &
-    7.933533402912352E-01,     7.071067811865475E-01, &
-    6.087614290087206E-01,     5.000000000000000E-01, &
-    3.826834323650898E-01,     2.588190451025208E-01, &
-    1.305261922200516E-01 /)
+    9.914448613738104D-01,     9.659258262890683D-01, &
+    9.238795325112868D-01,     8.660254037844386D-01, &
+    7.933533402912352D-01,     7.071067811865475D-01, &
+    6.087614290087206D-01,     5.000000000000000D-01, &
+    3.826834323650898D-01,     2.588190451025208D-01, &
+    1.305261922200516D-01 /)
 
-  centr = 5.0E-01 * ( b + a )
-  hlgth = 5.0E-01 * ( b - a )
+  centr = 5.0D-01 * ( b + a )
+  hlgth = 5.0D-01 * ( b - a )
   parint = omega * hlgth
 !
 !  Compute the integral using the 15-point Gauss-Kronrod
@@ -4505,7 +4505,7 @@ subroutine qc25o ( f, a, b, omega, integr, nrmom, maxp1, ksave, result, &
 !  is less than (bb-aa)/2**(maxp1-2), where (aa,bb) is the
 !  original integration interval.
 !
-  if ( abs ( parint ) <= 2.0E+00 ) then
+  if ( abs ( parint ) <= 2.0D+00 ) then
 
     call qk15w ( f, qwgto, omega, p2, p3, p4, integr, a, b, result, &
       abserr, resabs, resasc )
@@ -4533,18 +4533,18 @@ subroutine qc25o ( f, a, b, omega, integr, nrmom, maxp1, ksave, result, &
 !
   m = momcom + 1
   par2 = parint * parint
-  par22 = par2 + 2.0E+00
+  par22 = par2 + 2.0D+00
   sinpar = sin(parint)
   cospar = cos(parint)
 !
 !  Compute the Chebyshev moments with respect to cosine.
 !
-  v(1) = 2.0E+00 * sinpar / parint
-  v(2) = (8.0E+00*cospar+(par2+par2-8.0E+00)*sinpar/ parint)/par2
-  v(3) = (3.2E+01*(par2-1.2E+01)*cospar+(2.0E+00* &
-     ((par2-8.0E+01)*par2+1.92E+02)*sinpar)/ &
+  v(1) = 2.0D+00 * sinpar / parint
+  v(2) = (8.0D+00*cospar+(par2+par2-8.0D+00)*sinpar/ parint)/par2
+  v(3) = (3.2E+01*(par2-1.2E+01)*cospar+(2.0D+00* &
+     ((par2-8.0D+01)*par2+1.92E+02)*sinpar)/ &
      parint)/(par2*par2)
-  ac = 8.0E+00*cospar
+  ac = 8.0D+00*cospar
   as = 2.4E+01*parint*sinpar
 
   if ( abs ( parint ) > 2.4E+01 ) then
@@ -4557,34 +4557,34 @@ subroutine qc25o ( f, a, b, omega, integr, nrmom, maxp1, ksave, result, &
 !
   noequ = nmac-3
   noeq1 = noequ-1
-  an = 6.0E+00
+  an = 6.0D+00
 
   do k = 1, noeq1
     an2 = an*an
-    d(k) = -2.0E+00*(an2-4.0E+00) * (par22-an2-an2)
-    d2(k) = (an-1.0E+00)*(an-2.0E+00) * par2
-    d1(k) = (an+3.0E+00)*(an+4.0E+00) * par2
-    v(k+3) = as-(an2-4.0E+00) * ac
-    an = an+2.0E+00
+    d(k) = -2.0D+00*(an2-4.0D+00) * (par22-an2-an2)
+    d2(k) = (an-1.0D+00)*(an-2.0D+00) * par2
+    d1(k) = (an+3.0D+00)*(an+4.0D+00) * par2
+    v(k+3) = as-(an2-4.0D+00) * ac
+    an = an+2.0D+00
   end do
 
   an2 = an*an
-  d(noequ) = -2.0E+00*(an2-4.0E+00) * (par22-an2-an2)
-  v(noequ+3) = as - ( an2 - 4.0E+00 ) * ac
+  d(noequ) = -2.0D+00*(an2-4.0D+00) * (par22-an2-an2)
+  v(noequ+3) = as - ( an2 - 4.0D+00 ) * ac
   v(4) = v(4) - 5.6E+01 * par2 * v(3)
   ass = parint * sinpar
-  asap = (((((2.10E+02*par2-1.0E+00)*cospar-(1.05E+02*par2 &
-     -6.3E+01)*ass)/an2-(1.0E+00-1.5E+01*par2)*cospar &
-     +1.5E+01*ass)/an2-cospar+3.0E+00*ass)/an2-cospar)/an2
-  v(noequ+3) = v(noequ+3)-2.0E+00*asap*par2*(an-1.0E+00)* &
-      (an-2.0E+00)
+  asap = (((((2.10D+02*par2-1.0D+00)*cospar-(1.05E+02*par2 &
+     -6.3E+01)*ass)/an2-(1.0D+00-1.5E+01*par2)*cospar &
+     +1.5E+01*ass)/an2-cospar+3.0D+00*ass)/an2-cospar)/an2
+  v(noequ+3) = v(noequ+3)-2.0D+00*asap*par2*(an-1.0D+00)* &
+      (an-2.0D+00)
 !
 !  Solve the tridiagonal system by means of Gaussian
 !  elimination with partial pivoting.
 !
-  d3(1:noequ) = 0.0E+00
+  d3(1:noequ) = 0.0D+00
 
-  d2(noequ) = 0.0E+00
+  d2(noequ) = 0.0D+00
 
   do i = 1, noeq1
 
@@ -4596,7 +4596,7 @@ subroutine qc25o ( f, a, b, omega, integr, nrmom, maxp1, ksave, result, &
       d2(i) = d(i+1)
       d(i+1) = an
       d3(i) = d2(i+1)
-      d2(i+1) = 0.0E+00
+      d2(i+1) = 0.0D+00
       an = v(i+4)
       v(i+4) = v(i+3)
       v(i+3) = an
@@ -4622,14 +4622,14 @@ subroutine qc25o ( f, a, b, omega, integr, nrmom, maxp1, ksave, result, &
 !
 70 continue
 
-  an = 4.0E+00
+  an = 4.0D+00
 
   do i = 4, 13
     an2 = an*an
-    v(i) = ((an2-4.0E+00)*(2.0E+00*(par22-an2-an2)*v(i-1)-ac) &
-     +as-par2*(an+1.0E+00)*(an+2.0E+00)*v(i-2))/ &
-     (par2*(an-1.0E+00)*(an-2.0E+00))
-    an = an+2.0E+00
+    v(i) = ((an2-4.0D+00)*(2.0D+00*(par22-an2-an2)*v(i-1)-ac) &
+     +as-par2*(an+1.0D+00)*(an+2.0D+00)*v(i-2))/ &
+     (par2*(an-1.0D+00)*(an-2.0D+00))
+    an = an+2.0D+00
   end do
 
 90 continue
@@ -4640,11 +4640,11 @@ subroutine qc25o ( f, a, b, omega, integr, nrmom, maxp1, ksave, result, &
 !
 !  Compute the Chebyshev moments with respect to sine.
 !
-  v(1) = 2.0E+00*(sinpar-parint*cospar)/par2
+  v(1) = 2.0D+00*(sinpar-parint*cospar)/par2
   v(2) = (1.8E+01-4.8E+01/par2)*sinpar/par2 &
-     +(-2.0E+00+4.8E+01/par2)*cospar/parint
+     +(-2.0D+00+4.8E+01/par2)*cospar/parint
   ac = -2.4E+01*parint*cospar
-  as = -8.0E+00*sinpar
+  as = -8.0D+00*sinpar
   chebmo(m,2) = v(1)
   chebmo(m,4) = v(2)
 
@@ -4652,22 +4652,22 @@ subroutine qc25o ( f, a, b, omega, integr, nrmom, maxp1, ksave, result, &
 
     do k = 3, 12
       an = k
-      chebmo(m,2*k) = -sinpar/(an*(2.0E+00*an-2.0E+00)) &
-                 -2.5E-01*parint*(v(k+1)/an-v(k)/(an-1.0E+00))
+      chebmo(m,2*k) = -sinpar/(an*(2.0D+00*an-2.0D+00)) &
+                 -2.5D-01*parint*(v(k+1)/an-v(k)/(an-1.0D+00))
     end do
 !
 !  Compute the Chebyshev moments by means of forward recursion.
 !
   else
 
-    an = 3.0E+00
+    an = 3.0D+00
 
     do i = 3, 12
       an2 = an*an
-      v(i) = ((an2-4.0E+00)*(2.0E+00*(par22-an2-an2)*v(i-1)+as) &
-       +ac-par2*(an+1.0E+00)*(an+2.0E+00)*v(i-2)) &
-       /(par2*(an-1.0E+00)*(an-2.0E+00))
-      an = an+2.0E+00
+      v(i) = ((an2-4.0D+00)*(2.0D+00*(par22-an2-an2)*v(i-1)+as) &
+       +ac-par2*(an+1.0D+00)*(an+2.0D+00)*v(i-2)) &
+       /(par2*(an-1.0D+00)*(an-2.0D+00))
+      an = an+2.0D+00
       chebmo(m,2*i) = v(i)
     end do
 
@@ -4686,9 +4686,9 @@ subroutine qc25o ( f, a, b, omega, integr, nrmom, maxp1, ksave, result, &
 !  Compute the coefficients of the Chebyshev expansions
 !  of degrees 12 and 24 of the function F.
 !
-  fval(1) = 5.0E-01 * f(centr+hlgth)
+  fval(1) = 5.0D-01 * f(centr+hlgth)
   fval(13) = f(centr)
-  fval(25) = 5.0E-01 * f(centr-hlgth)
+  fval(25) = 5.0D-01 * f(centr-hlgth)
 
   do i = 2, 12
     isym = 26-i
@@ -4701,10 +4701,10 @@ subroutine qc25o ( f, a, b, omega, integr, nrmom, maxp1, ksave, result, &
 !  Compute the integral and error estimates.
 !
   resc12 = cheb12(13) * chebmo(m,13)
-  ress12 = 0.0E+00
+  ress12 = 0.0D+00
   estc = abs ( cheb24(25)*chebmo(m,25))+abs((cheb12(13)- &
     cheb24(13))*chebmo(m,13) )
-  ests = 0.0E+00
+  ests = 0.0D+00
   k = 11
 
   do j = 1, 6
@@ -4716,7 +4716,7 @@ subroutine qc25o ( f, a, b, omega, integr, nrmom, maxp1, ksave, result, &
   end do
 
   resc24 = cheb24(25)*chebmo(m,25)
-  ress24 = 0.0E+00
+  ress24 = 0.0D+00
   resabs = abs(cheb24(25))
   k = 23
 
@@ -4868,20 +4868,20 @@ subroutine qc25s ( f, a, b, bl, br, alfa, beta, ri, rj, rg, rh, result, &
   real ( kind = 8 ) rj(25)
   real ( kind = 8 ) u
   real ( kind = 8 ), dimension ( 11 ) :: x = (/ &
-    9.914448613738104E-01,     9.659258262890683E-01, &
-    9.238795325112868E-01,     8.660254037844386E-01, &
-    7.933533402912352E-01,     7.071067811865475E-01, &
-    6.087614290087206E-01,     5.000000000000000E-01, &
-    3.826834323650898E-01,     2.588190451025208E-01, &
-    1.305261922200516E-01 /)
+    9.914448613738104D-01,     9.659258262890683D-01, &
+    9.238795325112868D-01,     8.660254037844386D-01, &
+    7.933533402912352D-01,     7.071067811865475D-01, &
+    6.087614290087206D-01,     5.000000000000000D-01, &
+    3.826834323650898D-01,     2.588190451025208D-01, &
+    1.305261922200516D-01 /)
 
   neval = 25
 
-  if ( bl == a .and. (alfa /= 0.0E+00 .or. integr == 2 .or. integr == 4)) then
+  if ( bl == a .and. (alfa /= 0.0D+00 .or. integr == 2 .or. integr == 4)) then
     go to 10
   end if
 
-  if ( br == b .and. (beta /= 0.0E+00 .or. integr == 3 .or. integr == 4)) &
+  if ( br == b .and. (beta /= 0.0D+00 .or. integr == 3 .or. integr == 4)) &
     go to 140
 !
 !  If a > bl and b < br, apply the 15-point Gauss-Kronrod scheme.
@@ -4899,12 +4899,12 @@ subroutine qc25s ( f, a, b, bl, br, alfa, beta, ri, rj, rg, rh, result, &
 !
 10 continue
 
-  hlgth = 5.0E-01*(br-bl)
-  centr = 5.0E-01*(br+bl)
+  hlgth = 5.0D-01*(br-bl)
+  centr = 5.0D-01*(br+bl)
   fix = b-centr
-  fval(1) = 5.0E-01*f(hlgth+centr)*(fix-hlgth)**beta
+  fval(1) = 5.0D-01*f(hlgth+centr)*(fix-hlgth)**beta
   fval(13) = f(centr)*(fix**beta)
-  fval(25) = 5.0E-01*f(centr-hlgth)*(fix+hlgth)**beta
+  fval(25) = 5.0D-01*f(centr-hlgth)*(fix+hlgth)**beta
 
   do i = 2, 12
     u = hlgth*x(i-1)
@@ -4913,11 +4913,11 @@ subroutine qc25s ( f, a, b, bl, br, alfa, beta, ri, rj, rg, rh, result, &
     fval(isym) = f(centr-u)*(fix+u)**beta
   end do
 
-  factor = hlgth**(alfa+1.0E+00)
-  result = 0.0E+00
-  abserr = 0.0E+00
-  res12 = 0.0E+00
-  res24 = 0.0E+00
+  factor = hlgth**(alfa+1.0D+00)
+  result = 0.0D+00
+  abserr = 0.0D+00
+  res12 = 0.0D+00
+  res24 = 0.0D+00
 
   if ( integr > 2 ) go to 70
 
@@ -4941,8 +4941,8 @@ subroutine qc25s ( f, a, b, bl, br, alfa, beta, ri, rj, rg, rh, result, &
   dc = log ( br - bl )
   result = res24 * dc
   abserr = abs((res24-res12)*dc)
-  res12 = 0.0E+00
-  res24 = 0.0E+00
+  res12 = 0.0D+00
+  res24 = 0.0D+00
 
   do i = 1, 13
     res12 = res12+cheb12(i)*rg(i)
@@ -4993,8 +4993,8 @@ subroutine qc25s ( f, a, b, bl, br, alfa, beta, ri, rj, rg, rh, result, &
   dc = log ( br - bl )
   result = res24*dc
   abserr = abs((res24-res12)*dc)
-  res12 = 0.0E+00
-  res24 = 0.0E+00
+  res12 = 0.0D+00
+  res24 = 0.0D+00
 
   do i = 1, 13
     res12 = res12+cheb12(i)*rg(i)
@@ -5018,12 +5018,12 @@ subroutine qc25s ( f, a, b, bl, br, alfa, beta, ri, rj, rg, rh, result, &
 !
 140 continue
 
-  hlgth = 5.0E-01*(br-bl)
-  centr = 5.0E-01*(br+bl)
+  hlgth = 5.0D-01*(br-bl)
+  centr = 5.0D-01*(br+bl)
   fix = centr-a
-  fval(1) = 5.0E-01*f(hlgth+centr)*(fix+hlgth)**alfa
+  fval(1) = 5.0D-01*f(hlgth+centr)*(fix+hlgth)**alfa
   fval(13) = f(centr)*(fix**alfa)
-  fval(25) = 5.0E-01*f(centr-hlgth)*(fix-hlgth)**alfa
+  fval(25) = 5.0D-01*f(centr-hlgth)*(fix-hlgth)**alfa
 
   do i = 2, 12
     u = hlgth*x(i-1)
@@ -5032,11 +5032,11 @@ subroutine qc25s ( f, a, b, bl, br, alfa, beta, ri, rj, rg, rh, result, &
     fval(isym) = f(centr-u)*(fix-u)**alfa
   end do
 
-  factor = hlgth**(beta+1.0E+00)
-  result = 0.0E+00
-  abserr = 0.0E+00
-  res12 = 0.0E+00
-  res24 = 0.0E+00
+  factor = hlgth**(beta+1.0D+00)
+  result = 0.0D+00
+  abserr = 0.0D+00
+  res12 = 0.0D+00
+  res24 = 0.0D+00
 
   if ( integr == 2 .or. integr == 4 ) then
     go to 200
@@ -5062,8 +5062,8 @@ subroutine qc25s ( f, a, b, bl, br, alfa, beta, ri, rj, rg, rh, result, &
   dc = log ( br - bl )
   result = res24*dc
   abserr = abs((res24-res12)*dc)
-  res12 = 0.0E+00
-  res24 = 0.0E+00
+  res12 = 0.0D+00
+  res24 = 0.0D+00
 
   do i = 1, 13
     res12 = res12+cheb12(i)*rh(i)
@@ -5110,8 +5110,8 @@ subroutine qc25s ( f, a, b, bl, br, alfa, beta, ri, rj, rg, rh, result, &
   dc = log(br-bl)
   result = res24*dc
   abserr = abs((res24-res12)*dc)
-  res12 = 0.0E+00
-  res24 = 0.0E+00
+  res12 = 0.0D+00
+  res24 = 0.0D+00
 !
 !  integr = 4
 !
@@ -5277,13 +5277,13 @@ subroutine qcheb ( x, fval, cheb12, cheb24 )
   cheb24(25) = cheb12(1)-alam
   cheb12(13) = v(1)-v(3)
   cheb24(13) = cheb12(13)
-  alam = 1.0E+00/6.0E+00
+  alam = 1.0D+00/6.0D+00
 
   do i = 2, 12
     cheb12(i) = cheb12(i)*alam
   end do
 
-  alam = 5.0E-01*alam
+  alam = 5.0D-01*alam
   cheb12(1) = cheb12(1)*alam
   cheb12(13) = cheb12(13)*alam
 
@@ -5450,13 +5450,13 @@ subroutine qextr ( n, epstab, result, abserr, res3la, nres )
 !
     if ( err1 <= tol1 .or. err2 <= tol2 .or. err3 <= tol3 ) go to 20
 
-    ss = 1.0E+00/delta1+1.0E+00/delta2-1.0E+00/delta3
+    ss = 1.0D+00/delta1+1.0D+00/delta2-1.0D+00/delta3
     epsinf = abs ( ss*e1 )
 !
 !  Test to detect irregular behavior in the table, and
 !  eventually omit a part of the table adjusting the value of N.
 !
-    if ( epsinf > 1.0E-04 ) go to 30
+    if ( epsinf > 1.0D-04 ) go to 30
 
 20  continue
 
@@ -5467,7 +5467,7 @@ subroutine qextr ( n, epstab, result, abserr, res3la, nres )
 !
 30  continue
 
-    res = e1+1.0E+00/ss
+    res = e1+1.0D+00/ss
     epstab(k1) = res
     k1 = k1-2
     error = err2+abs(res-e2)+err3
@@ -5822,17 +5822,17 @@ subroutine qfour ( f, a, b, omega, integr, epsabs, epsrel, limit, icall, &
   ier = 0
   neval = 0
   last = 0
-  result = 0.0E+00
-  abserr = 0.0E+00
+  result = 0.0D+00
+  abserr = 0.0D+00
   alist(1) = a
   blist(1) = b
-  rlist(1) = 0.0E+00
-  elist(1) = 0.0E+00
+  rlist(1) = 0.0D+00
+  elist(1) = 0.0D+00
   iord(1) = 0
   nnlog(1) = 0
 
-  if ( (integr /= 1.and.integr /= 2) .or. (epsabs < 0.0E+00.and. &
-    epsrel < 0.0E+00) .or. icall < 1 .or. maxp1 < 1 ) then
+  if ( (integr /= 1.and.integr /= 2) .or. (epsabs < 0.0D+00.and. &
+    epsrel < 0.0D+00) .or. icall < 1 .or. maxp1 < 1 ) then
     ier = 6
     return
   end if
@@ -5856,7 +5856,7 @@ subroutine qfour ( f, a, b, omega, integr, epsabs, epsrel, limit, icall, &
   rlist(1) = result
   elist(1) = abserr
   iord(1) = 1
-  if ( abserr <= 1.0E+02* epsilon ( defabs ) *defabs .and. &
+  if ( abserr <= 1.0D+02* epsilon ( defabs ) *defabs .and. &
     abserr > errbnd ) ier = 2
 
   if ( limit == 1 ) then
@@ -5882,22 +5882,22 @@ subroutine qfour ( f, a, b, omega, integr, epsabs, epsrel, limit, icall, &
   iroff2 = 0
   iroff3 = 0
   ktmin = 0
-  small = abs(b-a)*7.5E-01
+  small = abs(b-a)*7.5D-01
   nres = 0
   numrl2 = 0
   extall = .false.
 
-  if ( 5.0E-01*abs(b-a)*domega <= 2.0E+00) then
+  if ( 5.0D-01*abs(b-a)*domega <= 2.0D+00) then
     numrl2 = 1
     extall = .true.
     rlist2(1) = result
   end if
 
-  if ( 2.5E-01 * abs(b-a) * domega <= 2.0E+00 ) then
+  if ( 2.5D-01 * abs(b-a) * domega <= 2.0D+00 ) then
     extall = .true.
   end if
 
-  if ( dres >= (1.0E+00-5.0E+01* epsilon ( defabs ) )*defabs ) then
+  if ( dres >= (1.0D+00-5.0D+01* epsilon ( defabs ) )*defabs ) then
     ksgn = 1
   else
     ksgn = -1
@@ -5911,7 +5911,7 @@ subroutine qfour ( f, a, b, omega, integr, epsabs, epsrel, limit, icall, &
 !
     nrmom = nnlog(maxerr)+1
     a1 = alist(maxerr)
-    b1 = 5.0E-01*(alist(maxerr)+blist(maxerr))
+    b1 = 5.0D-01*(alist(maxerr)+blist(maxerr))
     a2 = b1
     b2 = blist(maxerr)
     erlast = errmax
@@ -5934,8 +5934,8 @@ subroutine qfour ( f, a, b, omega, integr, epsabs, epsrel, limit, icall, &
     errsum = errsum+erro12-errmax
     area = area+area12-rlist(maxerr)
     if ( defab1 == error1 .or. defab2 == error2 ) go to 25
-    if ( abs(rlist(maxerr)-area12) > 1.0E-05*abs(area12) &
-    .or. erro12 < 9.9E-01*errmax ) go to 20
+    if ( abs(rlist(maxerr)-area12) > 1.0D-05*abs(area12) &
+    .or. erro12 < 9.9D-01*errmax ) go to 20
     if ( extrap ) iroff2 = iroff2+1
 
     if ( .not.extrap ) then
@@ -5970,8 +5970,8 @@ subroutine qfour ( f, a, b, omega, integr, epsabs, epsrel, limit, icall, &
 !  Set error flag in the case of bad integrand behavior at
 !  a point of the integration range.
 !
-    if ( max ( abs(a1),abs(b2)) <= (1.0E+00+1.0E+03* epsilon ( a1 ) ) &
-    *(abs(a2)+1.0E+03* tiny ( a2 ) )) then
+    if ( max ( abs(a1),abs(b2)) <= (1.0D+00+1.0D+03* epsilon ( a1 ) ) &
+    *(abs(a2)+1.0D+03* tiny ( a2 ) )) then
       ier = 4
     end if
 !
@@ -6036,9 +6036,9 @@ subroutine qfour ( f, a, b, omega, integr, epsabs, epsrel, limit, icall, &
 !  (we do this if we integrate over the next interval with
 !  use of a Gauss-Kronrod rule - see QC25O).
 !
-    small = small*5.0E-01
+    small = small*5.0D-01
 
-    if ( 2.5E-01*width*domega > 2.0E+00 ) then
+    if ( 2.5D-01*width*domega > 2.0D+00 ) then
       cycle
     end if
 
@@ -6085,7 +6085,7 @@ subroutine qfour ( f, a, b, omega, integr, epsabs, epsrel, limit, icall, &
     call qextr ( numrl2, rlist2, reseps, abseps, res3la, nres )
     ktmin = ktmin+1
 
-    if ( ktmin > 5.and.abserr < 1.0E-03*errsum ) then
+    if ( ktmin > 5.and.abserr < 1.0D-03*errsum ) then
       ier = 5
     end if
 
@@ -6119,13 +6119,13 @@ subroutine qfour ( f, a, b, omega, integr, epsabs, epsrel, limit, icall, &
     errmax = elist(maxerr)
     nrmax = 1
     extrap = .false.
-    small = small*5.0E-01
+    small = small*5.0D-01
     erlarg = errsum
     cycle
 
 120 continue
 
-    small = small * 5.0E-01
+    small = small * 5.0D-01
     numrl2 = numrl2 + 1
     rlist2(numrl2) = area
 
@@ -6147,9 +6147,9 @@ subroutine qfour ( f, a, b, omega, integr, epsabs, epsrel, limit, icall, &
   if ( ier+ierro == 0 ) go to 165
   if ( ierro == 3 ) abserr = abserr+correc
   if ( ier == 0 ) ier = 3
-  if ( result /= 0.0E+00.and.area /= 0.0E+00 ) go to 160
+  if ( result /= 0.0D+00.and.area /= 0.0D+00 ) go to 160
   if ( abserr > errsum ) go to 170
-  if ( area == 0.0E+00 ) go to 190
+  if ( area == 0.0D+00 ) go to 190
   go to 165
 
 160 continue
@@ -6161,9 +6161,9 @@ subroutine qfour ( f, a, b, omega, integr, epsabs, epsrel, limit, icall, &
   165 continue
 
   if ( ksgn == (-1) .and. max ( abs(result),abs(area)) <=  &
-   defabs*1.0E-02 ) go to 190
+   defabs*1.0D-02 ) go to 190
 
-  if ( 1.0E-02 > (result/area) .or. (result/area) > 1.0E+02 &
+  if ( 1.0D-02 > (result/area) .or. (result/area) > 1.0D+02 &
    .or. errsum >= abs(area) ) ier = 6
 
   go to 190
@@ -6182,7 +6182,7 @@ subroutine qfour ( f, a, b, omega, integr, epsabs, epsrel, limit, icall, &
 
 200 continue
 
-  if ( integr == 2 .and. omega < 0.0E+00 ) then
+  if ( integr == 2 .and. omega < 0.0D+00 ) then
     result = -result
   end if
 
@@ -6291,21 +6291,21 @@ subroutine qk15 ( f, a, b, result, abserr, resabs, resasc )
   real ( kind = 8 ) xgk(8)
 
   data xgk(1),xgk(2),xgk(3),xgk(4),xgk(5),xgk(6),xgk(7),xgk(8)/ &
-       9.914553711208126E-01,   9.491079123427585E-01, &
-       8.648644233597691E-01,   7.415311855993944E-01, &
-       5.860872354676911E-01,   4.058451513773972E-01, &
-       2.077849550078985E-01,   0.0E+00              /
+       9.914553711208126D-01,   9.491079123427585D-01, &
+       8.648644233597691D-01,   7.415311855993944D-01, &
+       5.860872354676911D-01,   4.058451513773972D-01, &
+       2.077849550078985D-01,   0.0D+00              /
   data wgk(1),wgk(2),wgk(3),wgk(4),wgk(5),wgk(6),wgk(7),wgk(8)/ &
-       2.293532201052922E-02,   6.309209262997855E-02, &
-       1.047900103222502E-01,   1.406532597155259E-01, &
-       1.690047266392679E-01,   1.903505780647854E-01, &
-       2.044329400752989E-01,   2.094821410847278E-01/
+       2.293532201052922D-02,   6.309209262997855D-02, &
+       1.047900103222502D-01,   1.406532597155259D-01, &
+       1.690047266392679D-01,   1.903505780647854D-01, &
+       2.044329400752989D-01,   2.094821410847278D-01/
   data wg(1),wg(2),wg(3),wg(4)/ &
-       1.294849661688697E-01,   2.797053914892767E-01, &
-       3.818300505051189E-01,   4.179591836734694E-01/
+       1.294849661688697D-01,   2.797053914892767D-01, &
+       3.818300505051189D-01,   4.179591836734694D-01/
 !
-  centr = 5.0E-01*(a+b)
-  hlgth = 5.0E-01*(b-a)
+  centr = 5.0D-01*(a+b)
+  hlgth = 5.0D-01*(b-a)
   dhlgth = abs(hlgth)
 !
 !  Compute the 15-point Kronrod approximation to the integral,
@@ -6341,7 +6341,7 @@ subroutine qk15 ( f, a, b, result, abserr, resabs, resasc )
     resabs = resabs+wgk(jtwm1)*(abs(fval1)+abs(fval2))
   end do
 
-  reskh = resk * 5.0E-01
+  reskh = resk * 5.0D-01
   resasc = wgk(8)*abs(fc-reskh)
 
   do j = 1, 7
@@ -6353,12 +6353,12 @@ subroutine qk15 ( f, a, b, result, abserr, resabs, resasc )
   resasc = resasc*dhlgth
   abserr = abs((resk-resg)*hlgth)
 
-  if ( resasc /= 0.0E+00.and.abserr /= 0.0E+00 ) then
-    abserr = resasc*min ( 1.0E+00,(2.0E+02*abserr/resasc)**1.5E+00)
+  if ( resasc /= 0.0D+00.and.abserr /= 0.0D+00 ) then
+    abserr = resasc*min ( 1.0D+00,(2.0D+02*abserr/resasc)**1.5E+00)
   end if
 
-  if ( resabs > tiny ( resabs ) / (5.0E+01* epsilon ( resabs ) ) ) then
-    abserr = max (( epsilon ( resabs ) *5.0E+01)*resabs,abserr)
+  if ( resabs > tiny ( resabs ) / (5.0D+01* epsilon ( resabs ) ) ) then
+    abserr = max (( epsilon ( resabs ) *5.0D+01)*resabs,abserr)
   end if
 
   return
@@ -6483,28 +6483,28 @@ subroutine qk15i ( f, boun, inf, a, b, result, abserr, resabs, resasc )
 !                    wg(1), wg(3), ... are set to zero.
 !
   data xgk(1),xgk(2),xgk(3),xgk(4),xgk(5),xgk(6),xgk(7),xgk(8)/ &
-       9.914553711208126E-01,     9.491079123427585E-01, &
-       8.648644233597691E-01,     7.415311855993944E-01, &
-       5.860872354676911E-01,     4.058451513773972E-01, &
-       2.077849550078985E-01,     0.0000000000000000E+00/
+       9.914553711208126D-01,     9.491079123427585D-01, &
+       8.648644233597691D-01,     7.415311855993944D-01, &
+       5.860872354676911D-01,     4.058451513773972D-01, &
+       2.077849550078985D-01,     0.0000000000000000D+00/
 
   data wgk(1),wgk(2),wgk(3),wgk(4),wgk(5),wgk(6),wgk(7),wgk(8)/ &
-       2.293532201052922E-02,     6.309209262997855E-02, &
-       1.047900103222502E-01,     1.406532597155259E-01, &
-       1.690047266392679E-01,     1.903505780647854E-01, &
-       2.044329400752989E-01,     2.094821410847278E-01/
+       2.293532201052922D-02,     6.309209262997855D-02, &
+       1.047900103222502D-01,     1.406532597155259D-01, &
+       1.690047266392679D-01,     1.903505780647854D-01, &
+       2.044329400752989D-01,     2.094821410847278D-01/
 
   data wg(1),wg(2),wg(3),wg(4),wg(5),wg(6),wg(7),wg(8)/ &
-       0.0000000000000000E+00,     1.294849661688697E-01, &
-       0.0000000000000000E+00,     2.797053914892767E-01, &
-       0.0000000000000000E+00,     3.818300505051189E-01, &
-       0.0000000000000000E+00,     4.179591836734694E-01/
+       0.0000000000000000D+00,     1.294849661688697D-01, &
+       0.0000000000000000D+00,     2.797053914892767D-01, &
+       0.0000000000000000D+00,     3.818300505051189D-01, &
+       0.0000000000000000D+00,     4.179591836734694D-01/
 
   dinf = min ( 1, inf )
 
-  centr = 5.0E-01*(a+b)
-  hlgth = 5.0E-01*(b-a)
-  tabsc1 = boun+dinf*(1.0E+00-centr)/centr
+  centr = 5.0D-01*(a+b)
+  hlgth = 5.0D-01*(b-a)
+  tabsc1 = boun+dinf*(1.0D+00-centr)/centr
   fval1 = f(tabsc1)
   if ( inf == 2 ) fval1 = fval1+f(-tabsc1)
   fc = (fval1/centr)/centr
@@ -6521,8 +6521,8 @@ subroutine qk15i ( f, boun, inf, a, b, result, abserr, resabs, resasc )
     absc = hlgth*xgk(j)
     absc1 = centr-absc
     absc2 = centr+absc
-    tabsc1 = boun+dinf*(1.0E+00-absc1)/absc1
-    tabsc2 = boun+dinf*(1.0E+00-absc2)/absc2
+    tabsc1 = boun+dinf*(1.0D+00-absc1)/absc1
+    tabsc2 = boun+dinf*(1.0D+00-absc2)/absc2
     fval1 = f(tabsc1)
     fval2 = f(tabsc2)
 
@@ -6541,7 +6541,7 @@ subroutine qk15i ( f, boun, inf, a, b, result, abserr, resabs, resasc )
     resabs = resabs+wgk(j)*(abs(fval1)+abs(fval2))
   end do
 
-  reskh = resk * 5.0E-01
+  reskh = resk * 5.0D-01
   resasc = wgk(8) * abs(fc-reskh)
 
   do j = 1, 7
@@ -6553,12 +6553,12 @@ subroutine qk15i ( f, boun, inf, a, b, result, abserr, resabs, resasc )
   resabs = resabs * hlgth
   abserr = abs ( ( resk - resg ) * hlgth )
 
-  if ( resasc /= 0.0E+00.and.abserr /= 0.0E+00) then
-    abserr = resasc* min ( 1.0E+00,(2.0E+02*abserr/resasc)**1.5E+00)
+  if ( resasc /= 0.0D+00.and.abserr /= 0.0D+00) then
+    abserr = resasc* min ( 1.0D+00,(2.0D+02*abserr/resasc)**1.5E+00)
   end if
 
-  if ( resabs > tiny ( resabs ) / ( 5.0E+01 * epsilon ( resabs ) ) ) then
-    abserr = max (( epsilon ( resabs ) *5.0E+01)*resabs,abserr)
+  if ( resabs > tiny ( resabs ) / ( 5.0D+01 * epsilon ( resabs ) ) ) then
+    abserr = max (( epsilon ( resabs ) *5.0D+01)*resabs,abserr)
   end if
 
   return
@@ -6666,8 +6666,8 @@ subroutine qk15w ( f, w, p1, p2, p3, p4, kp, a, b, result, abserr, resabs, &
   real ( kind = 8 ) result
   real ( kind = 8 ), external :: w
   real ( kind = 8 ), dimension ( 4 ) :: wg = (/ &
-    1.294849661688697E-01,     2.797053914892767E-01, &
-    3.818300505051889E-01,     4.179591836734694E-01 /)
+    1.294849661688697D-01,     2.797053914892767D-01, &
+    3.818300505051889D-01,     4.179591836734694D-01 /)
   real ( kind = 8 ) wgk(8)
   real ( kind = 8 ) xgk(8)
 !
@@ -6686,19 +6686,19 @@ subroutine qk15w ( f, w, p1, p2, p3, p4, kp, a, b, result, abserr, resabs, &
 !           wg     - weights of the 7-point Gauss rule
 !
   data xgk(1),xgk(2),xgk(3),xgk(4),xgk(5),xgk(6),xgk(7),xgk(8)/ &
-       9.914553711208126E-01,     9.491079123427585E-01, &
-       8.648644233597691E-01,     7.415311855993944E-01, &
-       5.860872354676911E-01,     4.058451513773972E-01, &
-       2.077849550789850E-01,     0.000000000000000E+00/
+       9.914553711208126D-01,     9.491079123427585D-01, &
+       8.648644233597691D-01,     7.415311855993944D-01, &
+       5.860872354676911D-01,     4.058451513773972D-01, &
+       2.077849550789850D-01,     0.000000000000000D+00/
 
   data wgk(1),wgk(2),wgk(3),wgk(4),wgk(5),wgk(6),wgk(7),wgk(8)/ &
-       2.293532201052922E-02,     6.309209262997855E-02, &
-       1.047900103222502E-01,     1.406532597155259E-01, &
-       1.690047266392679E-01,     1.903505780647854E-01, &
-       2.044329400752989E-01,     2.094821410847278E-01/
+       2.293532201052922D-02,     6.309209262997855D-02, &
+       1.047900103222502D-01,     1.406532597155259D-01, &
+       1.690047266392679D-01,     1.903505780647854D-01, &
+       2.044329400752989D-01,     2.094821410847278D-01/
 !
-  centr = 5.0E-01*(a+b)
-  hlgth = 5.0E-01*(b-a)
+  centr = 5.0D-01*(a+b)
+  hlgth = 5.0D-01*(b-a)
   dhlgth = abs(hlgth)
 !
 !  Compute the 15-point Kronrod approximation to the integral,
@@ -6738,7 +6738,7 @@ subroutine qk15w ( f, w, p1, p2, p3, p4, kp, a, b, result, abserr, resabs, &
     resabs = resabs+wgk(jtwm1)*(abs(fval1)+abs(fval2))
   end do
 
-  reskh = resk*5.0E-01
+  reskh = resk*5.0D-01
   resasc = wgk(8)*abs(fc-reskh)
 
   do j = 1, 7
@@ -6750,12 +6750,12 @@ subroutine qk15w ( f, w, p1, p2, p3, p4, kp, a, b, result, abserr, resabs, &
   resasc = resasc*dhlgth
   abserr = abs((resk-resg)*hlgth)
 
-  if ( resasc /= 0.0E+00.and.abserr /= 0.0E+00) then
-    abserr = resasc*min ( 1.0E+00,(2.0E+02*abserr/resasc)**1.5E+00)
+  if ( resasc /= 0.0D+00.and.abserr /= 0.0D+00) then
+    abserr = resasc*min ( 1.0D+00,(2.0D+02*abserr/resasc)**1.5E+00)
   end if
 
-  if ( resabs > tiny ( resabs ) /(5.0E+01* epsilon ( resabs ) ) ) then
-    abserr = max ( ( epsilon ( resabs ) * 5.0E+01)*resabs,abserr)
+  if ( resabs > tiny ( resabs ) /(5.0D+01* epsilon ( resabs ) ) ) then
+    abserr = max ( ( epsilon ( resabs ) * 5.0D+01)*resabs,abserr)
   end if
 
   return
@@ -6853,26 +6853,26 @@ subroutine qk21 ( f, a, b, result, abserr, resabs, resasc )
 !
   data xgk(1),xgk(2),xgk(3),xgk(4),xgk(5),xgk(6),xgk(7),xgk(8), &
     xgk(9),xgk(10),xgk(11)/ &
-       9.956571630258081E-01,     9.739065285171717E-01, &
-       9.301574913557082E-01,     8.650633666889845E-01, &
-       7.808177265864169E-01,     6.794095682990244E-01, &
-       5.627571346686047E-01,     4.333953941292472E-01, &
-       2.943928627014602E-01,     1.488743389816312E-01, &
-       0.000000000000000E+00/
+       9.956571630258081D-01,     9.739065285171717D-01, &
+       9.301574913557082D-01,     8.650633666889845D-01, &
+       7.808177265864169D-01,     6.794095682990244D-01, &
+       5.627571346686047D-01,     4.333953941292472D-01, &
+       2.943928627014602D-01,     1.488743389816312D-01, &
+       0.000000000000000D+00/
 !
   data wgk(1),wgk(2),wgk(3),wgk(4),wgk(5),wgk(6),wgk(7),wgk(8), &
     wgk(9),wgk(10),wgk(11)/ &
-       1.169463886737187E-02,     3.255816230796473E-02, &
-       5.475589657435200E-02,     7.503967481091995E-02, &
-       9.312545458369761E-02,     1.093871588022976E-01, &
-       1.234919762620659E-01,     1.347092173114733E-01, &
-       1.427759385770601E-01,     1.477391049013385E-01, &
-       1.494455540029169E-01/
+       1.169463886737187D-02,     3.255816230796473D-02, &
+       5.475589657435200D-02,     7.503967481091995D-02, &
+       9.312545458369761D-02,     1.093871588022976D-01, &
+       1.234919762620659D-01,     1.347092173114733D-01, &
+       1.427759385770601D-01,     1.477391049013385D-01, &
+       1.494455540029169D-01/
 !
   data wg(1),wg(2),wg(3),wg(4),wg(5)/ &
-       6.667134430868814E-02,     1.494513491505806E-01, &
-       2.190863625159820E-01,     2.692667193099964E-01, &
-       2.955242247147529E-01/
+       6.667134430868814D-02,     1.494513491505806D-01, &
+       2.190863625159820D-01,     2.692667193099964D-01, &
+       2.955242247147529D-01/
 !
 !
 !           list of major variables
@@ -6886,14 +6886,14 @@ subroutine qk21 ( f, a, b, result, abserr, resabs, resasc )
 !           reskh  - approximation to the mean value of f over (a,b),
 !                    i.e. to i/(b-a)
 !
-  centr = 5.0E-01*(a+b)
-  hlgth = 5.0E-01*(b-a)
+  centr = 5.0D-01*(a+b)
+  hlgth = 5.0D-01*(b-a)
   dhlgth = abs(hlgth)
 !
 !  Compute the 21-point Kronrod approximation to the
 !  integral, and estimate the absolute error.
 !
-  resg = 0.0E+00
+  resg = 0.0D+00
   fc = f(centr)
   resk = wgk(11)*fc
   resabs = abs(resk)
@@ -6923,7 +6923,7 @@ subroutine qk21 ( f, a, b, result, abserr, resabs, resasc )
     resabs = resabs+wgk(jtwm1)*(abs(fval1)+abs(fval2))
   end do
 
-  reskh = resk*5.0E-01
+  reskh = resk*5.0D-01
   resasc = wgk(11)*abs(fc-reskh)
 
   do j = 1, 10
@@ -6935,12 +6935,12 @@ subroutine qk21 ( f, a, b, result, abserr, resabs, resasc )
   resasc = resasc*dhlgth
   abserr = abs((resk-resg)*hlgth)
 
-  if ( resasc /= 0.0E+00.and.abserr /= 0.0E+00) then
-    abserr = resasc*min ( 1.0E+00,(2.0E+02*abserr/resasc)**1.5E+00)
+  if ( resasc /= 0.0D+00.and.abserr /= 0.0D+00) then
+    abserr = resasc*min ( 1.0D+00,(2.0D+02*abserr/resasc)**1.5E+00)
   end if
 
-  if ( resabs > tiny ( resabs ) /(5.0E+01* epsilon ( resabs ) )) then
-    abserr = max (( epsilon ( resabs ) *5.0E+01)*resabs,abserr)
+  if ( resabs > tiny ( resabs ) /(5.0D+01* epsilon ( resabs ) )) then
+    abserr = max (( epsilon ( resabs ) *5.0D+01)*resabs,abserr)
   end if
 
   return
@@ -7039,29 +7039,29 @@ subroutine qk31 ( f, a, b, result, abserr, resabs, resasc )
 !
   data xgk(1),xgk(2),xgk(3),xgk(4),xgk(5),xgk(6),xgk(7),xgk(8), &
     xgk(9),xgk(10),xgk(11),xgk(12),xgk(13),xgk(14),xgk(15),xgk(16)/ &
-       9.980022986933971E-01,   9.879925180204854E-01, &
-       9.677390756791391E-01,   9.372733924007059E-01, &
-       8.972645323440819E-01,   8.482065834104272E-01, &
-       7.904185014424659E-01,   7.244177313601700E-01, &
-       6.509967412974170E-01,   5.709721726085388E-01, &
-       4.850818636402397E-01,   3.941513470775634E-01, &
-       2.991800071531688E-01,   2.011940939974345E-01, &
-       1.011420669187175E-01,   0.0E+00               /
+       9.980022986933971D-01,   9.879925180204854D-01, &
+       9.677390756791391D-01,   9.372733924007059D-01, &
+       8.972645323440819D-01,   8.482065834104272D-01, &
+       7.904185014424659D-01,   7.244177313601700D-01, &
+       6.509967412974170D-01,   5.709721726085388D-01, &
+       4.850818636402397D-01,   3.941513470775634D-01, &
+       2.991800071531688D-01,   2.011940939974345D-01, &
+       1.011420669187175D-01,   0.0D+00               /
   data wgk(1),wgk(2),wgk(3),wgk(4),wgk(5),wgk(6),wgk(7),wgk(8), &
     wgk(9),wgk(10),wgk(11),wgk(12),wgk(13),wgk(14),wgk(15),wgk(16)/ &
-       5.377479872923349E-03,   1.500794732931612E-02, &
-       2.546084732671532E-02,   3.534636079137585E-02, &
-       4.458975132476488E-02,   5.348152469092809E-02, &
-       6.200956780067064E-02,   6.985412131872826E-02, &
-       7.684968075772038E-02,   8.308050282313302E-02, &
-       8.856444305621177E-02,   9.312659817082532E-02, &
-       9.664272698362368E-02,   9.917359872179196E-02, &
-       1.007698455238756E-01,   1.013300070147915E-01/
+       5.377479872923349D-03,   1.500794732931612D-02, &
+       2.546084732671532D-02,   3.534636079137585D-02, &
+       4.458975132476488D-02,   5.348152469092809D-02, &
+       6.200956780067064D-02,   6.985412131872826D-02, &
+       7.684968075772038D-02,   8.308050282313302D-02, &
+       8.856444305621177D-02,   9.312659817082532D-02, &
+       9.664272698362368D-02,   9.917359872179196D-02, &
+       1.007698455238756D-01,   1.013300070147915D-01/
   data wg(1),wg(2),wg(3),wg(4),wg(5),wg(6),wg(7),wg(8)/ &
-       3.075324199611727E-02,   7.036604748810812E-02, &
-       1.071592204671719E-01,   1.395706779261543E-01, &
-       1.662692058169939E-01,   1.861610000155622E-01, &
-       1.984314853271116E-01,   2.025782419255613E-01/
+       3.075324199611727D-02,   7.036604748810812D-02, &
+       1.071592204671719D-01,   1.395706779261543D-01, &
+       1.662692058169939D-01,   1.861610000155622D-01, &
+       1.984314853271116D-01,   2.025782419255613D-01/
 !
 !
 !           list of major variables
@@ -7075,8 +7075,8 @@ subroutine qk31 ( f, a, b, result, abserr, resabs, resasc )
 !           reskh  - approximation to the mean value of f over (a,b),
 !                    i.e. to i/(b-a)
 !
-  centr = 5.0E-01*(a+b)
-  hlgth = 5.0E-01*(b-a)
+  centr = 5.0D-01*(a+b)
+  hlgth = 5.0D-01*(b-a)
   dhlgth = abs(hlgth)
 !
 !  Compute the 31-point Kronrod approximation to the integral,
@@ -7112,7 +7112,7 @@ subroutine qk31 ( f, a, b, result, abserr, resabs, resasc )
     resabs = resabs+wgk(jtwm1)*(abs(fval1)+abs(fval2))
   end do
 
-  reskh = resk*5.0E-01
+  reskh = resk*5.0D-01
   resasc = wgk(16)*abs(fc-reskh)
 
   do j = 1, 15
@@ -7124,11 +7124,11 @@ subroutine qk31 ( f, a, b, result, abserr, resabs, resasc )
   resasc = resasc*dhlgth
   abserr = abs((resk-resg)*hlgth)
 
-  if ( resasc /= 0.0E+00.and.abserr /= 0.0E+00) &
-    abserr = resasc*min ( 1.0E+00,(2.0E+02*abserr/resasc)**1.5E+00)
+  if ( resasc /= 0.0D+00.and.abserr /= 0.0D+00) &
+    abserr = resasc*min ( 1.0D+00,(2.0D+02*abserr/resasc)**1.5E+00)
 
-  if ( resabs > tiny ( resabs ) /(5.0E+01* epsilon ( resabs ) )) then
-    abserr = max (( epsilon ( resabs ) *5.0E+01)*resabs,abserr)
+  if ( resabs > tiny ( resabs ) /(5.0D+01* epsilon ( resabs ) )) then
+    abserr = max (( epsilon ( resabs ) *5.0D+01)*resabs,abserr)
   end if
 
   return
@@ -7239,46 +7239,46 @@ subroutine qk41 ( f, a, b, result, abserr, resabs, resasc )
   data xgk(1),xgk(2),xgk(3),xgk(4),xgk(5),xgk(6),xgk(7),xgk(8), &
     xgk(9),xgk(10),xgk(11),xgk(12),xgk(13),xgk(14),xgk(15),xgk(16), &
     xgk(17),xgk(18),xgk(19),xgk(20),xgk(21)/ &
-       9.988590315882777E-01,   9.931285991850949E-01, &
-       9.815078774502503E-01,   9.639719272779138E-01, &
-       9.408226338317548E-01,   9.122344282513259E-01, &
-       8.782768112522820E-01,   8.391169718222188E-01, &
-       7.950414288375512E-01,   7.463319064601508E-01, &
-       6.932376563347514E-01,   6.360536807265150E-01, &
-       5.751404468197103E-01,   5.108670019508271E-01, &
-       4.435931752387251E-01,   3.737060887154196E-01, &
-       3.016278681149130E-01,   2.277858511416451E-01, &
-       1.526054652409227E-01,   7.652652113349733E-02, &
-       0.0E+00               /
+       9.988590315882777D-01,   9.931285991850949D-01, &
+       9.815078774502503D-01,   9.639719272779138D-01, &
+       9.408226338317548D-01,   9.122344282513259D-01, &
+       8.782768112522820D-01,   8.391169718222188D-01, &
+       7.950414288375512D-01,   7.463319064601508D-01, &
+       6.932376563347514D-01,   6.360536807265150D-01, &
+       5.751404468197103D-01,   5.108670019508271D-01, &
+       4.435931752387251D-01,   3.737060887154196D-01, &
+       3.016278681149130D-01,   2.277858511416451D-01, &
+       1.526054652409227D-01,   7.652652113349733D-02, &
+       0.0D+00               /
   data wgk(1),wgk(2),wgk(3),wgk(4),wgk(5),wgk(6),wgk(7),wgk(8), &
     wgk(9),wgk(10),wgk(11),wgk(12),wgk(13),wgk(14),wgk(15),wgk(16), &
     wgk(17),wgk(18),wgk(19),wgk(20),wgk(21)/ &
-       3.073583718520532E-03,   8.600269855642942E-03, &
-       1.462616925697125E-02,   2.038837346126652E-02, &
-       2.588213360495116E-02,   3.128730677703280E-02, &
-       3.660016975820080E-02,   4.166887332797369E-02, &
-       4.643482186749767E-02,   5.094457392372869E-02, &
-       5.519510534828599E-02,   5.911140088063957E-02, &
-       6.265323755478117E-02,   6.583459713361842E-02, &
-       6.864867292852162E-02,   7.105442355344407E-02, &
-       7.303069033278667E-02,   7.458287540049919E-02, &
-       7.570449768455667E-02,   7.637786767208074E-02, &
-       7.660071191799966E-02/
+       3.073583718520532D-03,   8.600269855642942D-03, &
+       1.462616925697125D-02,   2.038837346126652D-02, &
+       2.588213360495116D-02,   3.128730677703280D-02, &
+       3.660016975820080D-02,   4.166887332797369D-02, &
+       4.643482186749767D-02,   5.094457392372869D-02, &
+       5.519510534828599D-02,   5.911140088063957D-02, &
+       6.265323755478117D-02,   6.583459713361842D-02, &
+       6.864867292852162D-02,   7.105442355344407D-02, &
+       7.303069033278667D-02,   7.458287540049919D-02, &
+       7.570449768455667D-02,   7.637786767208074D-02, &
+       7.660071191799966D-02/
   data wg(1),wg(2),wg(3),wg(4),wg(5),wg(6),wg(7),wg(8),wg(9),wg(10)/ &
-       1.761400713915212E-02,   4.060142980038694E-02, &
-       6.267204833410906E-02,   8.327674157670475E-02, &
-       1.019301198172404E-01,   1.181945319615184E-01, &
-       1.316886384491766E-01,   1.420961093183821E-01, &
-       1.491729864726037E-01,   1.527533871307259E-01/
+       1.761400713915212D-02,   4.060142980038694D-02, &
+       6.267204833410906D-02,   8.327674157670475D-02, &
+       1.019301198172404D-01,   1.181945319615184D-01, &
+       1.316886384491766D-01,   1.420961093183821D-01, &
+       1.491729864726037D-01,   1.527533871307259D-01/
 !
-  centr = 5.0E-01*(a+b)
-  hlgth = 5.0E-01*(b-a)
+  centr = 5.0D-01*(a+b)
+  hlgth = 5.0D-01*(b-a)
   dhlgth = abs(hlgth)
 !
 !  Compute 41-point Gauss-Kronrod approximation to the
 !  the integral, and estimate the absolute error.
 !
-  resg = 0.0E+00
+  resg = 0.0D+00
   fc = f(centr)
   resk = wgk(21)*fc
   resabs = abs(resk)
@@ -7308,7 +7308,7 @@ subroutine qk41 ( f, a, b, result, abserr, resabs, resasc )
     resabs = resabs+wgk(jtwm1)*(abs(fval1)+abs(fval2))
   end do
 
-  reskh = resk*5.0E-01
+  reskh = resk*5.0D-01
   resasc = wgk(21)*abs(fc-reskh)
 
   do j = 1, 20
@@ -7320,11 +7320,11 @@ subroutine qk41 ( f, a, b, result, abserr, resabs, resasc )
   resasc = resasc*dhlgth
   abserr = abs((resk-resg)*hlgth)
 
-  if ( resasc /= 0.0E+00.and.abserr /= 0.0E+00) &
-    abserr = resasc*min ( 1.0E+00,(2.0E+02*abserr/resasc)**1.5E+00)
+  if ( resasc /= 0.0D+00.and.abserr /= 0.0D+00) &
+    abserr = resasc*min ( 1.0D+00,(2.0D+02*abserr/resasc)**1.5E+00)
 
-  if ( resabs > tiny ( resabs ) /(5.0E+01* epsilon ( resabs ) )) then
-    abserr = max (( epsilon ( resabs ) *5.0E+01)*resabs,abserr)
+  if ( resabs > tiny ( resabs ) /(5.0D+01* epsilon ( resabs ) )) then
+    abserr = max (( epsilon ( resabs ) *5.0D+01)*resabs,abserr)
   end if
 
   return
@@ -7433,50 +7433,50 @@ subroutine qk51 ( f, a, b, result, abserr, resabs, resasc )
 !
   data xgk(1),xgk(2),xgk(3),xgk(4),xgk(5),xgk(6),xgk(7),xgk(8), &
     xgk(9),xgk(10),xgk(11),xgk(12),xgk(13),xgk(14)/ &
-       9.992621049926098E-01,   9.955569697904981E-01, &
-       9.880357945340772E-01,   9.766639214595175E-01, &
-       9.616149864258425E-01,   9.429745712289743E-01, &
-       9.207471152817016E-01,   8.949919978782754E-01, &
-       8.658470652932756E-01,   8.334426287608340E-01, &
-       7.978737979985001E-01,   7.592592630373576E-01, &
-       7.177664068130844E-01,   6.735663684734684E-01/
+       9.992621049926098D-01,   9.955569697904981D-01, &
+       9.880357945340772D-01,   9.766639214595175D-01, &
+       9.616149864258425D-01,   9.429745712289743D-01, &
+       9.207471152817016D-01,   8.949919978782754D-01, &
+       8.658470652932756D-01,   8.334426287608340D-01, &
+       7.978737979985001D-01,   7.592592630373576D-01, &
+       7.177664068130844D-01,   6.735663684734684D-01/
    data xgk(15),xgk(16),xgk(17),xgk(18),xgk(19),xgk(20),xgk(21), &
     xgk(22),xgk(23),xgk(24),xgk(25),xgk(26)/ &
-       6.268100990103174E-01,   5.776629302412230E-01, &
-       5.263252843347192E-01,   4.730027314457150E-01, &
-       4.178853821930377E-01,   3.611723058093878E-01, &
-       3.030895389311078E-01,   2.438668837209884E-01, &
-       1.837189394210489E-01,   1.228646926107104E-01, &
-       6.154448300568508E-02,   0.0E+00               /
+       6.268100990103174D-01,   5.776629302412230D-01, &
+       5.263252843347192D-01,   4.730027314457150D-01, &
+       4.178853821930377D-01,   3.611723058093878D-01, &
+       3.030895389311078D-01,   2.438668837209884D-01, &
+       1.837189394210489D-01,   1.228646926107104D-01, &
+       6.154448300568508D-02,   0.0D+00               /
   data wgk(1),wgk(2),wgk(3),wgk(4),wgk(5),wgk(6),wgk(7),wgk(8), &
     wgk(9),wgk(10),wgk(11),wgk(12),wgk(13),wgk(14)/ &
-       1.987383892330316E-03,   5.561932135356714E-03, &
-       9.473973386174152E-03,   1.323622919557167E-02, &
-       1.684781770912830E-02,   2.043537114588284E-02, &
-       2.400994560695322E-02,   2.747531758785174E-02, &
-       3.079230016738749E-02,   3.400213027432934E-02, &
-       3.711627148341554E-02,   4.008382550403238E-02, &
-       4.287284502017005E-02,   4.550291304992179E-02/
+       1.987383892330316D-03,   5.561932135356714D-03, &
+       9.473973386174152D-03,   1.323622919557167D-02, &
+       1.684781770912830D-02,   2.043537114588284D-02, &
+       2.400994560695322D-02,   2.747531758785174D-02, &
+       3.079230016738749D-02,   3.400213027432934D-02, &
+       3.711627148341554D-02,   4.008382550403238D-02, &
+       4.287284502017005D-02,   4.550291304992179D-02/
    data wgk(15),wgk(16),wgk(17),wgk(18),wgk(19),wgk(20),wgk(21), &
     wgk(22),wgk(23),wgk(24),wgk(25),wgk(26)/ &
-       4.798253713883671E-02,   5.027767908071567E-02, &
-       5.236288580640748E-02,   5.425112988854549E-02, &
-       5.595081122041232E-02,   5.743711636156783E-02, &
-       5.868968002239421E-02,   5.972034032417406E-02, &
-       6.053945537604586E-02,   6.112850971705305E-02, &
-       6.147118987142532E-02,   6.158081806783294E-02/
+       4.798253713883671D-02,   5.027767908071567D-02, &
+       5.236288580640748D-02,   5.425112988854549D-02, &
+       5.595081122041232D-02,   5.743711636156783D-02, &
+       5.868968002239421D-02,   5.972034032417406D-02, &
+       6.053945537604586D-02,   6.112850971705305D-02, &
+       6.147118987142532D-02,   6.158081806783294D-02/
   data wg(1),wg(2),wg(3),wg(4),wg(5),wg(6),wg(7),wg(8),wg(9),wg(10), &
     wg(11),wg(12),wg(13)/ &
-       1.139379850102629E-02,   2.635498661503214E-02, &
-       4.093915670130631E-02,   5.490469597583519E-02, &
-       6.803833381235692E-02,   8.014070033500102E-02, &
-       9.102826198296365E-02,   1.005359490670506E-01, &
-       1.085196244742637E-01,   1.148582591457116E-01, &
-       1.194557635357848E-01,   1.222424429903100E-01, &
-       1.231760537267155E-01/
+       1.139379850102629D-02,   2.635498661503214D-02, &
+       4.093915670130631D-02,   5.490469597583519D-02, &
+       6.803833381235692D-02,   8.014070033500102D-02, &
+       9.102826198296365D-02,   1.005359490670506D-01, &
+       1.085196244742637D-01,   1.148582591457116D-01, &
+       1.194557635357848D-01,   1.222424429903100D-01, &
+       1.231760537267155D-01/
 !
-  centr = 5.0E-01*(a+b)
-  hlgth = 5.0E-01*(b-a)
+  centr = 5.0D-01*(a+b)
+  hlgth = 5.0D-01*(b-a)
   dhlgth = abs(hlgth)
 !
 !  Compute the 51-point Kronrod approximation to the integral,
@@ -7512,7 +7512,7 @@ subroutine qk51 ( f, a, b, result, abserr, resabs, resasc )
     resabs = resabs+wgk(jtwm1)*(abs(fval1)+abs(fval2))
   end do
 
-  reskh = resk*5.0E-01
+  reskh = resk*5.0D-01
   resasc = wgk(26)*abs(fc-reskh)
 
   do j = 1, 25
@@ -7524,12 +7524,12 @@ subroutine qk51 ( f, a, b, result, abserr, resabs, resasc )
   resasc = resasc*dhlgth
   abserr = abs((resk-resg)*hlgth)
 
-  if ( resasc /= 0.0E+00.and.abserr /= 0.0E+00) then
-    abserr = resasc*min ( 1.0E+00,(2.0E+02*abserr/resasc)**1.5E+00)
+  if ( resasc /= 0.0D+00.and.abserr /= 0.0D+00) then
+    abserr = resasc*min ( 1.0D+00,(2.0D+02*abserr/resasc)**1.5E+00)
   end if
 
-  if ( resabs > tiny ( resabs ) / (5.0E+01* epsilon ( resabs ) ) ) then
-    abserr = max (( epsilon ( resabs ) *5.0E+01)*resabs,abserr)
+  if ( resabs > tiny ( resabs ) / (5.0D+01* epsilon ( resabs ) ) ) then
+    abserr = max (( epsilon ( resabs ) *5.0D+01)*resabs,abserr)
   end if
 
   return
@@ -7638,67 +7638,67 @@ subroutine qk61 ( f, a, b, result, abserr, resabs, resasc )
 !
   data xgk(1),xgk(2),xgk(3),xgk(4),xgk(5),xgk(6),xgk(7),xgk(8), &
      xgk(9),xgk(10)/ &
-       9.994844100504906E-01,     9.968934840746495E-01, &
-       9.916309968704046E-01,     9.836681232797472E-01, &
-       9.731163225011263E-01,     9.600218649683075E-01, &
-       9.443744447485600E-01,     9.262000474292743E-01, &
-       9.055733076999078E-01,     8.825605357920527E-01/
+       9.994844100504906D-01,     9.968934840746495D-01, &
+       9.916309968704046D-01,     9.836681232797472D-01, &
+       9.731163225011263D-01,     9.600218649683075D-01, &
+       9.443744447485600D-01,     9.262000474292743D-01, &
+       9.055733076999078D-01,     8.825605357920527D-01/
   data xgk(11),xgk(12),xgk(13),xgk(14),xgk(15),xgk(16),xgk(17), &
     xgk(18),xgk(19),xgk(20)/ &
-       8.572052335460611E-01,     8.295657623827684E-01, &
-       7.997278358218391E-01,     7.677774321048262E-01, &
-       7.337900624532268E-01,     6.978504947933158E-01, &
-       6.600610641266270E-01,     6.205261829892429E-01, &
-       5.793452358263617E-01,     5.366241481420199E-01/
+       8.572052335460611D-01,     8.295657623827684D-01, &
+       7.997278358218391D-01,     7.677774321048262D-01, &
+       7.337900624532268D-01,     6.978504947933158D-01, &
+       6.600610641266270D-01,     6.205261829892429D-01, &
+       5.793452358263617D-01,     5.366241481420199D-01/
   data xgk(21),xgk(22),xgk(23),xgk(24),xgk(25),xgk(26),xgk(27), &
     xgk(28),xgk(29),xgk(30),xgk(31)/ &
-       4.924804678617786E-01,     4.470337695380892E-01, &
-       4.004012548303944E-01,     3.527047255308781E-01, &
-       3.040732022736251E-01,     2.546369261678898E-01, &
-       2.045251166823099E-01,     1.538699136085835E-01, &
-       1.028069379667370E-01,     5.147184255531770E-02, &
-       0.0E+00                   /
+       4.924804678617786D-01,     4.470337695380892D-01, &
+       4.004012548303944D-01,     3.527047255308781D-01, &
+       3.040732022736251D-01,     2.546369261678898D-01, &
+       2.045251166823099D-01,     1.538699136085835D-01, &
+       1.028069379667370D-01,     5.147184255531770D-02, &
+       0.0D+00                   /
   data wgk(1),wgk(2),wgk(3),wgk(4),wgk(5),wgk(6),wgk(7),wgk(8), &
     wgk(9),wgk(10)/ &
-       1.389013698677008E-03,     3.890461127099884E-03, &
-       6.630703915931292E-03,     9.273279659517763E-03, &
-       1.182301525349634E-02,     1.436972950704580E-02, &
-       1.692088918905327E-02,     1.941414119394238E-02, &
-       2.182803582160919E-02,     2.419116207808060E-02/
+       1.389013698677008D-03,     3.890461127099884D-03, &
+       6.630703915931292D-03,     9.273279659517763D-03, &
+       1.182301525349634D-02,     1.436972950704580D-02, &
+       1.692088918905327D-02,     1.941414119394238D-02, &
+       2.182803582160919D-02,     2.419116207808060D-02/
   data wgk(11),wgk(12),wgk(13),wgk(14),wgk(15),wgk(16),wgk(17), &
     wgk(18),wgk(19),wgk(20)/ &
-       2.650995488233310E-02,     2.875404876504129E-02, &
-       3.090725756238776E-02,     3.298144705748373E-02, &
-       3.497933802806002E-02,     3.688236465182123E-02, &
-       3.867894562472759E-02,     4.037453895153596E-02, &
-       4.196981021516425E-02,     4.345253970135607E-02/
+       2.650995488233310D-02,     2.875404876504129D-02, &
+       3.090725756238776D-02,     3.298144705748373D-02, &
+       3.497933802806002D-02,     3.688236465182123D-02, &
+       3.867894562472759D-02,     4.037453895153596D-02, &
+       4.196981021516425D-02,     4.345253970135607D-02/
   data wgk(21),wgk(22),wgk(23),wgk(24),wgk(25),wgk(26),wgk(27), &
     wgk(28),wgk(29),wgk(30),wgk(31)/ &
-       4.481480013316266E-02,     4.605923827100699E-02, &
-       4.718554656929915E-02,     4.818586175708713E-02, &
-       4.905543455502978E-02,     4.979568342707421E-02, &
-       5.040592140278235E-02,     5.088179589874961E-02, &
-       5.122154784925877E-02,     5.142612853745903E-02, &
-       5.149472942945157E-02/
+       4.481480013316266D-02,     4.605923827100699D-02, &
+       4.718554656929915D-02,     4.818586175708713D-02, &
+       4.905543455502978D-02,     4.979568342707421D-02, &
+       5.040592140278235D-02,     5.088179589874961D-02, &
+       5.122154784925877D-02,     5.142612853745903D-02, &
+       5.149472942945157D-02/
   data wg(1),wg(2),wg(3),wg(4),wg(5),wg(6),wg(7),wg(8)/ &
-       7.968192496166606E-03,     1.846646831109096E-02, &
-       2.878470788332337E-02,     3.879919256962705E-02, &
-       4.840267283059405E-02,     5.749315621761907E-02, &
-       6.597422988218050E-02,     7.375597473770521E-02/
+       7.968192496166606D-03,     1.846646831109096D-02, &
+       2.878470788332337D-02,     3.879919256962705D-02, &
+       4.840267283059405D-02,     5.749315621761907D-02, &
+       6.597422988218050D-02,     7.375597473770521D-02/
   data wg(9),wg(10),wg(11),wg(12),wg(13),wg(14),wg(15)/ &
-       8.075589522942022E-02,     8.689978720108298E-02, &
-       9.212252223778613E-02,     9.636873717464426E-02, &
-       9.959342058679527E-02,     1.017623897484055E-01, &
-       1.028526528935588E-01/
+       8.075589522942022D-02,     8.689978720108298D-02, &
+       9.212252223778613D-02,     9.636873717464426D-02, &
+       9.959342058679527D-02,     1.017623897484055D-01, &
+       1.028526528935588D-01/
 
-  centr = 5.0E-01*(b+a)
-  hlgth = 5.0E-01*(b-a)
+  centr = 5.0D-01*(b+a)
+  hlgth = 5.0D-01*(b-a)
   dhlgth = abs(hlgth)
 !
 !  Compute the 61-point Kronrod approximation to the integral,
 !  and estimate the absolute error.
 !
-  resg = 0.0E+00
+  resg = 0.0D+00
   fc = f(centr)
   resk = wgk(31)*fc
   resabs = abs(resk)
@@ -7728,7 +7728,7 @@ subroutine qk61 ( f, a, b, result, abserr, resabs, resasc )
     resabs = resabs+wgk(jtwm1)*(abs(fval1)+abs(fval2))
   end do
 
-  reskh = resk * 5.0E-01
+  reskh = resk * 5.0D-01
   resasc = wgk(31)*abs(fc-reskh)
 
   do j = 1, 30
@@ -7740,12 +7740,12 @@ subroutine qk61 ( f, a, b, result, abserr, resabs, resasc )
   resasc = resasc*dhlgth
   abserr = abs((resk-resg)*hlgth)
 
-  if ( resasc /= 0.0E+00 .and. abserr /= 0.0E+00) then
-    abserr = resasc*min ( 1.0E+00,(2.0E+02*abserr/resasc)**1.5E+00)
+  if ( resasc /= 0.0D+00 .and. abserr /= 0.0D+00) then
+    abserr = resasc*min ( 1.0D+00,(2.0D+02*abserr/resasc)**1.5E+00)
   end if
 
-  if ( resabs > tiny ( resabs ) / (5.0E+01* epsilon ( resabs ) )) then
-    abserr = max ( ( epsilon ( resabs ) *5.0E+01)*resabs, abserr )
+  if ( resabs > tiny ( resabs ) / (5.0D+01* epsilon ( resabs ) )) then
+    abserr = max ( ( epsilon ( resabs ) *5.0D+01)*resabs, abserr )
   end if
 
   return
@@ -7829,12 +7829,12 @@ subroutine qmomo ( alfa, beta, ri, rj, rg, rh, integr )
   real ( kind = 8 ) ri(25)
   real ( kind = 8 ) rj(25)
 !
-  alfp1 = alfa+1.0E+00
-  betp1 = beta+1.0E+00
-  alfp2 = alfa+2.0E+00
-  betp2 = beta+2.0E+00
-  ralf = 2.0E+00**alfp1
-  rbet = 2.0E+00**betp1
+  alfp1 = alfa+1.0D+00
+  betp1 = beta+1.0D+00
+  alfp2 = alfa+2.0D+00
+  betp2 = beta+2.0D+00
+  ralf = 2.0D+00**alfp1
+  rbet = 2.0D+00**betp1
 !
 !  Compute RI, RJ using a forward recurrence relation.
 !
@@ -7842,14 +7842,14 @@ subroutine qmomo ( alfa, beta, ri, rj, rg, rh, integr )
   rj(1) = rbet/betp1
   ri(2) = ri(1)*alfa/alfp2
   rj(2) = rj(1)*beta/betp2
-  an = 2.0E+00
-  anm1 = 1.0E+00
+  an = 2.0D+00
+  anm1 = 1.0D+00
 
   do i = 3, 25
     ri(i) = -(ralf+an*(an-alfp2)*ri(i-1))/(anm1*(an+alfp1))
     rj(i) = -(rbet+an*(an-betp2)*rj(i-1))/(anm1*(an+betp1))
     anm1 = an
-    an = an+1.0E+00
+    an = an+1.0D+00
   end do
 
   if ( integr == 1 ) go to 70
@@ -7859,15 +7859,15 @@ subroutine qmomo ( alfa, beta, ri, rj, rg, rh, integr )
 !
   rg(1) = -ri(1)/alfp1
   rg(2) = -(ralf+ralf)/(alfp2*alfp2)-rg(1)
-  an = 2.0E+00
-  anm1 = 1.0E+00
+  an = 2.0D+00
+  anm1 = 1.0D+00
   im1 = 2
 
   do i = 3, 25
     rg(i) = -(an*(an-alfp2)*rg(im1)-an*ri(im1)+anm1*ri(i))/ &
     (anm1*(an+alfp1))
     anm1 = an
-    an = an+1.0E+00
+    an = an+1.0D+00
     im1 = i
   end do
 
@@ -7879,15 +7879,15 @@ subroutine qmomo ( alfa, beta, ri, rj, rg, rh, integr )
 
   rh(1) = -rj(1) / betp1
   rh(2) = -(rbet+rbet)/(betp2*betp2)-rh(1)
-  an = 2.0E+00
-  anm1 = 1.0E+00
+  an = 2.0D+00
+  anm1 = 1.0D+00
   im1 = 2
 
   do i = 3, 25
     rh(i) = -(an*(an-betp2)*rh(im1)-an*rj(im1)+ &
     anm1*rj(i))/(anm1*(an+betp1))
     anm1 = an
-    an = an+1.0E+00
+    an = an+1.0D+00
     im1 = i
   end do
 
@@ -8051,106 +8051,106 @@ subroutine qng ( f, a, b, epsabs, epsrel, result, abserr, neval, ier )
 !           w87b    weights of the 87-point formula for abscissae x4
 !
   data x1(1),x1(2),x1(3),x1(4),x1(5)/ &
-       9.739065285171717E-01,     8.650633666889845E-01, &
-       6.794095682990244E-01,     4.333953941292472E-01, &
-       1.488743389816312E-01/
+       9.739065285171717D-01,     8.650633666889845D-01, &
+       6.794095682990244D-01,     4.333953941292472D-01, &
+       1.488743389816312D-01/
   data x2(1),x2(2),x2(3),x2(4),x2(5)/ &
-       9.956571630258081E-01,     9.301574913557082E-01, &
-       7.808177265864169E-01,     5.627571346686047E-01, &
-       2.943928627014602E-01/
+       9.956571630258081D-01,     9.301574913557082D-01, &
+       7.808177265864169D-01,     5.627571346686047D-01, &
+       2.943928627014602D-01/
   data x3(1),x3(2),x3(3),x3(4),x3(5),x3(6),x3(7),x3(8),x3(9),x3(10), &
     x3(11)/ &
-       9.993333609019321E-01,     9.874334029080889E-01, &
-       9.548079348142663E-01,     9.001486957483283E-01, &
-       8.251983149831142E-01,     7.321483889893050E-01, &
-       6.228479705377252E-01,     4.994795740710565E-01, &
-       3.649016613465808E-01,     2.222549197766013E-01, &
-       7.465061746138332E-02/
+       9.993333609019321D-01,     9.874334029080889D-01, &
+       9.548079348142663D-01,     9.001486957483283D-01, &
+       8.251983149831142D-01,     7.321483889893050D-01, &
+       6.228479705377252D-01,     4.994795740710565D-01, &
+       3.649016613465808D-01,     2.222549197766013D-01, &
+       7.465061746138332D-02/
   data x4(1),x4(2),x4(3),x4(4),x4(5),x4(6),x4(7),x4(8),x4(9),x4(10), &
     x4(11),x4(12),x4(13),x4(14),x4(15),x4(16),x4(17),x4(18),x4(19), &
-    x4(20),x4(21),x4(22)/         9.999029772627292E-01, &
-       9.979898959866787E-01,     9.921754978606872E-01, &
-       9.813581635727128E-01,     9.650576238583846E-01, &
-       9.431676131336706E-01,     9.158064146855072E-01, &
-       8.832216577713165E-01,     8.457107484624157E-01, &
-       8.035576580352310E-01,     7.570057306854956E-01, &
-       7.062732097873218E-01,     6.515894665011779E-01, &
-       5.932233740579611E-01,     5.314936059708319E-01, &
-       4.667636230420228E-01,     3.994248478592188E-01, &
-       3.298748771061883E-01,     2.585035592021616E-01, &
-       1.856953965683467E-01,     1.118422131799075E-01, &
-       3.735212339461987E-02/
+    x4(20),x4(21),x4(22)/         9.999029772627292D-01, &
+       9.979898959866787D-01,     9.921754978606872D-01, &
+       9.813581635727128D-01,     9.650576238583846D-01, &
+       9.431676131336706D-01,     9.158064146855072D-01, &
+       8.832216577713165D-01,     8.457107484624157D-01, &
+       8.035576580352310D-01,     7.570057306854956D-01, &
+       7.062732097873218D-01,     6.515894665011779D-01, &
+       5.932233740579611D-01,     5.314936059708319D-01, &
+       4.667636230420228D-01,     3.994248478592188D-01, &
+       3.298748771061883D-01,     2.585035592021616D-01, &
+       1.856953965683467D-01,     1.118422131799075D-01, &
+       3.735212339461987D-02/
   data w10(1),w10(2),w10(3),w10(4),w10(5)/ &
-       6.667134430868814E-02,     1.494513491505806E-01, &
-       2.190863625159820E-01,     2.692667193099964E-01, &
-       2.955242247147529E-01/
+       6.667134430868814D-02,     1.494513491505806D-01, &
+       2.190863625159820D-01,     2.692667193099964D-01, &
+       2.955242247147529D-01/
   data w21a(1),w21a(2),w21a(3),w21a(4),w21a(5)/ &
-       3.255816230796473E-02,     7.503967481091995E-02, &
-       1.093871588022976E-01,     1.347092173114733E-01, &
-       1.477391049013385E-01/
+       3.255816230796473D-02,     7.503967481091995D-02, &
+       1.093871588022976D-01,     1.347092173114733D-01, &
+       1.477391049013385D-01/
   data w21b(1),w21b(2),w21b(3),w21b(4),w21b(5),w21b(6)/ &
-       1.169463886737187E-02,     5.475589657435200E-02, &
-       9.312545458369761E-02,     1.234919762620659E-01, &
-       1.427759385770601E-01,     1.494455540029169E-01/
+       1.169463886737187D-02,     5.475589657435200D-02, &
+       9.312545458369761D-02,     1.234919762620659D-01, &
+       1.427759385770601D-01,     1.494455540029169D-01/
   data w43a(1),w43a(2),w43a(3),w43a(4),w43a(5),w43a(6),w43a(7), &
-    w43a(8),w43a(9),w43a(10)/     1.629673428966656E-02, &
-       3.752287612086950E-02,     5.469490205825544E-02, &
-       6.735541460947809E-02,     7.387019963239395E-02, &
-       5.768556059769796E-03,     2.737189059324884E-02, &
-       4.656082691042883E-02,     6.174499520144256E-02, &
-       7.138726726869340E-02/
+    w43a(8),w43a(9),w43a(10)/     1.629673428966656D-02, &
+       3.752287612086950D-02,     5.469490205825544D-02, &
+       6.735541460947809D-02,     7.387019963239395D-02, &
+       5.768556059769796D-03,     2.737189059324884D-02, &
+       4.656082691042883D-02,     6.174499520144256D-02, &
+       7.138726726869340D-02/
   data w43b(1),w43b(2),w43b(3),w43b(4),w43b(5),w43b(6),w43b(7), &
     w43b(8),w43b(9),w43b(10),w43b(11),w43b(12)/ &
-       1.844477640212414E-03,     1.079868958589165E-02, &
-       2.189536386779543E-02,     3.259746397534569E-02, &
-       4.216313793519181E-02,     5.074193960018458E-02, &
-       5.837939554261925E-02,     6.474640495144589E-02, &
-       6.956619791235648E-02,     7.282444147183321E-02, &
-       7.450775101417512E-02,     7.472214751740301E-02/
+       1.844477640212414D-03,     1.079868958589165D-02, &
+       2.189536386779543D-02,     3.259746397534569D-02, &
+       4.216313793519181D-02,     5.074193960018458D-02, &
+       5.837939554261925D-02,     6.474640495144589D-02, &
+       6.956619791235648D-02,     7.282444147183321D-02, &
+       7.450775101417512D-02,     7.472214751740301D-02/
   data w87a(1),w87a(2),w87a(3),w87a(4),w87a(5),w87a(6),w87a(7), &
     w87a(8),w87a(9),w87a(10),w87a(11),w87a(12),w87a(13),w87a(14), &
     w87a(15),w87a(16),w87a(17),w87a(18),w87a(19),w87a(20),w87a(21)/ &
-       8.148377384149173E-03,     1.876143820156282E-02, &
-       2.734745105005229E-02,     3.367770731163793E-02, &
-       3.693509982042791E-02,     2.884872430211531E-03, &
-       1.368594602271270E-02,     2.328041350288831E-02, &
-       3.087249761171336E-02,     3.569363363941877E-02, &
-       9.152833452022414E-04,     5.399280219300471E-03, &
-       1.094767960111893E-02,     1.629873169678734E-02, &
-       2.108156888920384E-02,     2.537096976925383E-02, &
-       2.918969775647575E-02,     3.237320246720279E-02, &
-       3.478309895036514E-02,     3.641222073135179E-02, &
-       3.725387550304771E-02/
+       8.148377384149173D-03,     1.876143820156282D-02, &
+       2.734745105005229D-02,     3.367770731163793D-02, &
+       3.693509982042791D-02,     2.884872430211531D-03, &
+       1.368594602271270D-02,     2.328041350288831D-02, &
+       3.087249761171336D-02,     3.569363363941877D-02, &
+       9.152833452022414D-04,     5.399280219300471D-03, &
+       1.094767960111893D-02,     1.629873169678734D-02, &
+       2.108156888920384D-02,     2.537096976925383D-02, &
+       2.918969775647575D-02,     3.237320246720279D-02, &
+       3.478309895036514D-02,     3.641222073135179D-02, &
+       3.725387550304771D-02/
   data w87b(1),w87b(2),w87b(3),w87b(4),w87b(5),w87b(6),w87b(7), &
     w87b(8),w87b(9),w87b(10),w87b(11),w87b(12),w87b(13),w87b(14), &
     w87b(15),w87b(16),w87b(17),w87b(18),w87b(19),w87b(20),w87b(21), &
-    w87b(22),w87b(23)/            2.741455637620724E-04, &
-       1.807124155057943E-03,     4.096869282759165E-03, &
-       6.758290051847379E-03,     9.549957672201647E-03, &
-       1.232944765224485E-02,     1.501044734638895E-02, &
-       1.754896798624319E-02,     1.993803778644089E-02, &
-       2.219493596101229E-02,     2.433914712600081E-02, &
-       2.637450541483921E-02,     2.828691078877120E-02, &
-       3.005258112809270E-02,     3.164675137143993E-02, &
-       3.305041341997850E-02,     3.425509970422606E-02, &
-       3.526241266015668E-02,     3.607698962288870E-02, &
-       3.669860449845609E-02,     3.712054926983258E-02, &
-       3.733422875193504E-02,     3.736107376267902E-02/
+    w87b(22),w87b(23)/            2.741455637620724D-04, &
+       1.807124155057943D-03,     4.096869282759165D-03, &
+       6.758290051847379D-03,     9.549957672201647D-03, &
+       1.232944765224485D-02,     1.501044734638895D-02, &
+       1.754896798624319D-02,     1.993803778644089D-02, &
+       2.219493596101229D-02,     2.433914712600081D-02, &
+       2.637450541483921D-02,     2.828691078877120D-02, &
+       3.005258112809270D-02,     3.164675137143993D-02, &
+       3.305041341997850D-02,     3.425509970422606D-02, &
+       3.526241266015668D-02,     3.607698962288870D-02, &
+       3.669860449845609D-02,     3.712054926983258D-02, &
+       3.733422875193504D-02,     3.736107376267902D-02/
 !
 !  Test on validity of parameters.
 !
-  result = 0.0E+00
-  abserr = 0.0E+00
+  result = 0.0D+00
+  abserr = 0.0D+00
   neval = 0
 
-  if ( epsabs < 0.0E+00 .and. epsrel < 0.0E+00 ) then
+  if ( epsabs < 0.0D+00 .and. epsrel < 0.0D+00 ) then
     ier = 6
     return
   end if
 
-  hlgth = 5.0E-01 * ( b - a )
+  hlgth = 5.0D-01 * ( b - a )
   dhlgth = abs ( hlgth )
-  centr = 5.0E-01 * ( b + a )
+  centr = 5.0D-01 * ( b + a )
   fcentr = f(centr)
   neval = 21
   ier = 1
@@ -8161,7 +8161,7 @@ subroutine qng ( f, a, b, epsabs, epsrel, result, abserr, neval, ier )
 
     if ( l == 1 ) then
 
-      res10 = 0.0E+00
+      res10 = 0.0D+00
       res21 = w21b(6) * fcentr
       resabs = w21b(6) * abs(fcentr)
 
@@ -8197,7 +8197,7 @@ subroutine qng ( f, a, b, epsabs, epsrel, result, abserr, neval, ier )
 !
       result = res21 * hlgth
       resabs = resabs * dhlgth
-      reskh = 5.0E-01 * res21
+      reskh = 5.0D-01 * res21
       resasc = w21b(6) * abs ( fcentr - reskh )
 
       do k = 1, 5
@@ -8253,12 +8253,12 @@ subroutine qng ( f, a, b, epsabs, epsrel, result, abserr, neval, ier )
 
     end if
 
-    if ( resasc /= 0.0E+00.and.abserr /= 0.0E+00 ) then
-      abserr = resasc * min ( 1.0E+00,(2.0E+02*abserr/resasc)**1.5E+00)
+    if ( resasc /= 0.0D+00.and.abserr /= 0.0D+00 ) then
+      abserr = resasc * min ( 1.0D+00,(2.0D+02*abserr/resasc)**1.5E+00)
     end if
 
-    if ( resabs > tiny ( resabs ) / ( 5.0E+01 * epsilon ( resabs ) ) ) then
-      abserr = max (( epsilon ( resabs ) *5.0E+01) * resabs, abserr )
+    if ( resabs > tiny ( resabs ) / ( 5.0D+01 * epsilon ( resabs ) ) ) then
+      abserr = max (( epsilon ( resabs ) *5.0D+01) * resabs, abserr )
     end if
 
     if ( abserr <= max ( epsabs, epsrel*abs(result))) then
@@ -8478,7 +8478,7 @@ function qwgtc ( x, c, p2, p3, p4, kp )
   real ( kind = 8 ) qwgtc
   real ( kind = 8 ) x
 
-  qwgtc = 1.0E+00 / ( x - c )
+  qwgtc = 1.0D+00 / ( x - c )
 
   return
 end

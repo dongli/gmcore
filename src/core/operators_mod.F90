@@ -10,6 +10,7 @@ module operators_mod
   use log_mod
   use pv_mod
   use ke_mod
+  use reduce_mod
 
   implicit none
 
@@ -132,8 +133,8 @@ contains
       end do
     end do
 
-    call parallel_fill_halo(state%mesh, state%mf_lon_n, all_halo=.true.)
-    call parallel_fill_halo(state%mesh, state%mf_lat_n, all_halo=.true.)
+    call parallel_fill_halo(state%mesh, state%mf_lon_n)
+    call parallel_fill_halo(state%mesh, state%mf_lat_n)
 
   end subroutine calc_normal_mass_flux
 
@@ -167,8 +168,8 @@ contains
       end do
     end do
 
-    call parallel_fill_halo(state%mesh, state%mf_lat_t, all_halo=.true.)
-    call parallel_fill_halo(state%mesh, state%mf_lon_t, all_halo=.true.)
+    call parallel_fill_halo(state%mesh, state%mf_lat_t)
+    call parallel_fill_halo(state%mesh, state%mf_lon_t)
 
   end subroutine calc_tangent_mass_flux
 
@@ -237,17 +238,47 @@ contains
     type(state_type ), intent(inout) :: state
     type(tend_type  ), intent(inout) :: tend
 
-    integer i, j
+    integer i, j, move
 
+    ! --------------------------------------------------------------------------
+    !                           Zonal geopotential energy gradient
+    do j = state%mesh%full_lat_start_idx_no_pole, state%mesh%full_lat_end_idx_no_pole
+      if (reduced_full_mesh(j)%reduce_factor > 0) then
+        tend%dEdlon(:,j) = 0.0_r8
+        do move = 1, reduced_full_mesh(j)%reduce_factor
+          do i = reduced_full_mesh(j)%full_lon_start_idx, reduced_full_mesh(j)%full_lon_end_idx
+            reduced_full_tend(j)%dEdlon(i,move) = (                                           &
+              reduced_full_state (j)%gd (i+1,0,move) - reduced_full_state (j)%gd (i,0,move) + &
+              reduced_full_static(j)%ghs(i+1,0,move) - reduced_full_static(j)%ghs(i,0,move)   &
+            ) / reduced_full_mesh(j)%cell_lon_dist(0)
+          end do
+          call reduce_append_tend(move, reduced_full_mesh(j),          &
+                                  reduced_full_tend(j)%dEdlon(:,move), &
+                                  state%mesh, tend%dEdlon(:,j))
+        end do
+        call parallel_overlay_inner_halo(state%mesh, tend%dEdlon(:,j), left_halo=.true.)
+      else
+        do i = state%mesh%half_lon_start_idx, state%mesh%half_lon_end_idx
+          tend%dEdlon(i,j) = (                    &
+            state %gd (i+1,j) - state %gd (i,j) + &
+            static%ghs(i+1,j) - static%ghs(i,j)   &
+          ) / state%mesh%cell_lon_dist(j)
+        end do
+      end if
+    end do
+
+    ! --------------------------------------------------------------------------
+    !                       Zonal kinetic energy gradient
     do j = state%mesh%full_lat_start_idx_no_pole, state%mesh%full_lat_end_idx_no_pole
       do i = state%mesh%half_lon_start_idx, state%mesh%half_lon_end_idx
-        tend%dEdlon(i,j) = (state%ke_cell(i+1,j) - state%ke_cell(i,j)  +   &
-                            state%gd     (i+1,j) - state%gd     (i,j)  +   &
-                            static%ghs   (i+1,j) - static%ghs   (i,j)      &
-                           ) / state%mesh%cell_lon_dist(j)
+        tend%dEdlon(i,j) = tend%dEdlon(i,j) + (     &
+          state%ke_cell(i+1,j) - state%ke_cell(i,j) &
+        ) / state%mesh%cell_lon_dist(j)
       end do
     end do
 
+    ! --------------------------------------------------------------------------
+    !                         Meridional energy gradient
     do j = state%mesh%half_lat_start_idx_no_pole, state%mesh%half_lat_end_idx_no_pole
       do i = state%mesh%full_lon_start_idx, state%mesh%full_lon_end_idx
 #ifdef STAGGER_V_ON_POLE
@@ -270,22 +301,50 @@ contains
     type(state_type), intent(in) :: state
     type(tend_type), intent(inout) :: tend
 
-    integer i, j
+    integer i, j, move
     real(r8) pole
 
+    ! --------------------------------------------------------------------------
+    !                       Zonal mass flux divergence
+    do j = state%mesh%full_lat_start_idx_no_pole, state%mesh%full_lat_end_idx_no_pole
+      if (reduced_full_mesh(j)%reduce_factor > 0) then
+        tend%mf_div(:,j) = 0.0_r8
+        do move = 1, reduced_full_mesh(j)%reduce_factor
+          do i = reduced_full_mesh(j)%full_lon_start_idx, reduced_full_mesh(j)%full_lon_end_idx
+            reduced_full_tend(j)%mf_div_lon(i,move) = (                                             &
+              reduced_full_state(j)%mf_lon_n(i,0,move) - reduced_full_state(j)%mf_lon_n(i-1,0,move) &
+            ) * reduced_full_mesh (j)%vertex_lat_dist(0) / reduced_full_mesh (j)%cell_area(0)
+          end do
+          call reduce_append_tend(move, reduced_full_mesh(j), &
+                                  reduced_full_tend(j)%mf_div_lon(:,move), &
+                                  state%mesh, tend%mf_div(:,j))
+        end do
+        call parallel_overlay_inner_halo(state%mesh, tend%mf_div(:,j), left_halo=.true.)
+      else
+        do i = state%mesh%full_lon_start_idx, state%mesh%full_lon_end_idx
+          tend%mf_div(i,j) = (                          &
+            state%mf_lon_n(i,j) - state%mf_lon_n(i-1,j) &
+          ) * mesh %vertex_lat_dist(j) / mesh %cell_area(j)
+        end do
+      end if
+    end do
+
+    ! --------------------------------------------------------------------------
+    !                    Meridional mass flux divergence
     do j = state%mesh%full_lat_start_idx_no_pole, state%mesh%full_lat_end_idx_no_pole
       do i = state%mesh%full_lon_start_idx, state%mesh%full_lon_end_idx
-        tend%div_mass_flux(i,j) = ((state%mf_lon_n(i,j  ) - state%mf_lon_n(i-1,j)) * mesh%vertex_lat_dist(j) + &
+        tend%mf_div(i,j) = tend%mf_div(i,j) + (                                  &
 #ifdef STAGGER_V_ON_POLE
-                                   (state%mf_lat_n(i,j+1) * mesh%vertex_lon_dist(j+1) -                               &
-                                    state%mf_lat_n(i,j  ) * mesh%vertex_lon_dist(j  ))                                &
+                            (state%mf_lat_n(i,j+1) * mesh%vertex_lon_dist(j+1) - &
+                             state%mf_lat_n(i,j  ) * mesh%vertex_lon_dist(j  ))  &
 #else
-                                   (state%mf_lat_n(i,j  ) * mesh%vertex_lon_dist(j  ) -                               &
-                                    state%mf_lat_n(i,j-1) * mesh%vertex_lon_dist(j-1))                                &
+                            (state%mf_lat_n(i,j  ) * mesh%vertex_lon_dist(j  ) - &
+                             state%mf_lat_n(i,j-1) * mesh%vertex_lon_dist(j-1))  &
 #endif
-                                  ) / mesh%cell_area(j)
+                           ) / mesh%cell_area(j)
       end do
     end do
+
 #ifndef STAGGER_V_ON_POLE
     if (state%mesh%has_south_pole()) then
       j = state%mesh%full_lat_start_idx
@@ -296,7 +355,7 @@ contains
       call parallel_zonal_sum(pole)
       pole = pole * mesh%vertex_lon_dist(j) / state%mesh%num_full_lon / mesh%cell_area(j)
       do i = state%mesh%full_lon_start_idx, state%mesh%full_lon_end_idx
-        tend%div_mass_flux(i,j) = pole
+        tend%mf_div(i,j) = pole
       end do
     end if
     if (state%mesh%has_north_pole()) then
@@ -308,7 +367,7 @@ contains
       call parallel_zonal_sum(pole)
       pole = pole * mesh%vertex_lon_dist(j-1) / state%mesh%num_full_lon / mesh%cell_area(j)
       do i = state%mesh%full_lon_start_idx, state%mesh%full_lon_end_idx
-        tend%div_mass_flux(i,j) = pole
+        tend%mf_div(i,j) = pole
       end do
     end if
 #endif
