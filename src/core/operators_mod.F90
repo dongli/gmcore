@@ -197,17 +197,28 @@ contains
     do j = state%mesh%full_lat_start_idx_no_pole, state%mesh%full_lat_end_idx_no_pole
       do i = state%mesh%half_lon_start_idx, state%mesh%half_lon_end_idx
 #ifdef STAGGER_V_ON_POLE
-        tend%qhv(i,j) = (state%mesh%full_tangent_wgt(1,j) * (state%mf_lat_n(i  ,j  ) * (state%pv_lon(i,j) + state%pv_lat(i  ,j  ))  + &
-                                                             state%mf_lat_n(i+1,j  ) * (state%pv_lon(i,j) + state%pv_lat(i+1,j  ))) + &
-                         state%mesh%full_tangent_wgt(2,j) * (state%mf_lat_n(i  ,j+1) * (state%pv_lon(i,j) + state%pv_lat(i  ,j+1))  + &
-                                                             state%mf_lat_n(i+1,j+1) * (state%pv_lon(i,j) + state%pv_lat(i+1,j+1)))   &
-                        ) * 0.5d0
+        tend%qhv(i,j) = state%mesh%full_tangent_wgt(1,j) * (                      &
+          state%mf_lat_n(i  ,j  ) * (state%pv_lon(i,j) + state%pv_lat(i  ,j)  ) + &
+          state%mf_lat_n(i+1,j  ) * (state%pv_lon(i,j) + state%pv_lat(i+1,j)  )   &
+        ) * 0.5_r8
 #else
-        tend%qhv(i,j) = (state%mesh%full_tangent_wgt(1,j) * (state%mf_lat_n(i  ,j-1) * (state%pv_lon(i,j) + state%pv_lat(i  ,j-1))  + &
-                                                             state%mf_lat_n(i+1,j-1) * (state%pv_lon(i,j) + state%pv_lat(i+1,j-1))) + &
-                         state%mesh%full_tangent_wgt(2,j) * (state%mf_lat_n(i  ,j  ) * (state%pv_lon(i,j) + state%pv_lat(i  ,j  ))  + &
-                                                             state%mf_lat_n(i+1,j  ) * (state%pv_lon(i,j) + state%pv_lat(i+1,j  )))   &
-                        ) * 0.5d0
+        tend%qhv(i,j) = state%mesh%full_tangent_wgt(1,j) * (                      &
+          state%mf_lat_n(i  ,j-1) * (state%pv_lon(i,j) + state%pv_lat(i  ,j-1)) + &
+          state%mf_lat_n(i+1,j-1) * (state%pv_lon(i,j) + state%pv_lat(i+1,j-1))   &
+        ) * 0.5_r8
+#endif
+      end do
+      do i = state%mesh%half_lon_start_idx, state%mesh%half_lon_end_idx
+#ifdef STAGGER_V_ON_POLE
+        tend%qhv(i,j) = tend%qhv(i,j) + state%mesh%full_tangent_wgt(2,j) * (      &
+          state%mf_lat_n(i  ,j+1) * (state%pv_lon(i,j) + state%pv_lat(i  ,j+1)) + &
+          state%mf_lat_n(i+1,j+1) * (state%pv_lon(i,j) + state%pv_lat(i+1,j+1))   &
+        ) * 0.5_r8
+#else
+        tend%qhv(i,j) = tend%qhv(i,j) + state%mesh%full_tangent_wgt(2,j) * (      &
+          state%mf_lat_n(i  ,j  ) * (state%pv_lon(i,j) + state%pv_lat(i  ,j  )) + &
+          state%mf_lat_n(i+1,j  ) * (state%pv_lon(i,j) + state%pv_lat(i+1,j  ))   &
+        ) * 0.5_r8
 #endif
       end do
     end do
@@ -215,17 +226,28 @@ contains
     do j = state%mesh%half_lat_start_idx, state%mesh%half_lat_end_idx
       do i = state%mesh%full_lon_start_idx, state%mesh%full_lon_end_idx
 #ifdef STAGGER_V_ON_POLE
-        tend%qhu(i,j) = (state%mesh%half_tangent_wgt(1,j) * (state%mf_lon_n(i-1,j-1) * (state%pv_lat(i,j) + state%pv_lon(i-1,j-1))  + &
-                                                             state%mf_lon_n(i  ,j-1) * (state%pv_lat(i,j) + state%pv_lon(i  ,j-1))) + &
-                         state%mesh%half_tangent_wgt(2,j) * (state%mf_lon_n(i-1,j  ) * (state%pv_lat(i,j) + state%pv_lon(i-1,j  ))  + &
-                                                             state%mf_lon_n(i  ,j  ) * (state%pv_lat(i,j) + state%pv_lon(i  ,j  )))   &
-                        ) * 0.5d0
+        tend%qhu(i,j) = state%mesh%half_tangent_wgt(1,j) * (                      &
+          state%mf_lon_n(i-1,j-1) * (state%pv_lat(i,j) + state%pv_lon(i-1,j-1)) + &
+          state%mf_lon_n(i  ,j-1) * (state%pv_lat(i,j) + state%pv_lon(i  ,j-1))   &
+        ) * 0.5_r8
 #else
-        tend%qhu(i,j) = (state%mesh%half_tangent_wgt(1,j) * (state%mf_lon_n(i-1,j  ) * (state%pv_lat(i,j) + state%pv_lon(i-1,j  ))  + &
-                                                             state%mf_lon_n(i  ,j  ) * (state%pv_lat(i,j) + state%pv_lon(i  ,j  ))) + &
-                         state%mesh%half_tangent_wgt(2,j) * (state%mf_lon_n(i-1,j+1) * (state%pv_lat(i,j) + state%pv_lon(i-1,j+1))  + &
-                                                             state%mf_lon_n(i  ,j+1) * (state%pv_lat(i,j) + state%pv_lon(i  ,j+1)))   &
-                        ) * 0.5d0
+        tend%qhu(i,j) = state%mesh%half_tangent_wgt(1,j) * (                      &
+          state%mf_lon_n(i-1,j  ) * (state%pv_lat(i,j) + state%pv_lon(i-1,j  )) + &
+          state%mf_lon_n(i  ,j  ) * (state%pv_lat(i,j) + state%pv_lon(i  ,j  ))   &
+        ) * 0.5_r8
+#endif
+      end do
+      do i = state%mesh%full_lon_start_idx, state%mesh%full_lon_end_idx
+#ifdef STAGGER_V_ON_POLE
+        tend%qhu(i,j) = tend%qhu(i,j) + state%mesh%half_tangent_wgt(2,j) * (      &
+          state%mf_lon_n(i-1,j  ) * (state%pv_lat(i,j) + state%pv_lon(i-1,j  )) + &
+          state%mf_lon_n(i  ,j  ) * (state%pv_lat(i,j) + state%pv_lon(i  ,j  ))   &
+        ) * 0.5_r8
+#else
+        tend%qhu(i,j) = tend%qhu(i,j) + state%mesh%half_tangent_wgt(2,j) * (      &
+          state%mf_lon_n(i-1,j+1) * (state%pv_lat(i,j) + state%pv_lon(i-1,j+1)) + &
+          state%mf_lon_n(i  ,j+1) * (state%pv_lat(i,j) + state%pv_lon(i  ,j+1))   &
+        ) * 0.5_r8
 #endif
       end do
     end do
