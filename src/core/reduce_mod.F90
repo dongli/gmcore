@@ -88,6 +88,10 @@ module reduce_mod
     real(r8), allocatable, dimension(:,:,:) :: pv
     real(r8), allocatable, dimension(:,:,:) :: pv_lon
     real(r8), allocatable, dimension(:,:,:) :: pv_lat
+    real(r8), allocatable, dimension(:,:,:) :: dpv_lon_t
+    real(r8), allocatable, dimension(:,:,:) :: dpv_lat_t
+    real(r8), allocatable, dimension(:,:,:) :: dpv_lon_n
+    real(r8), allocatable, dimension(:,:,:) :: dpv_lat_n
     real(r8), allocatable, dimension(:,:,:) :: m_vtx
     real(r8), allocatable, dimension(:,:,:) :: m_lon
     real(r8), allocatable, dimension(:,:,:) :: m_lat
