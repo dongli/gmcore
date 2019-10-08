@@ -252,9 +252,9 @@ contains
               reduced_full_static(j)%ghs(i+1,0,move) - reduced_full_static(j)%ghs(i,0,move)   &
             ) / reduced_full_mesh(j)%cell_lon_dist(0)
           end do
-          call reduce_append_tend(move, reduced_full_mesh(j),          &
-                                  reduced_full_tend(j)%dEdlon(:,move), &
-                                  state%mesh, tend%dEdlon(:,j))
+          call reduce_append_array(move, reduced_full_mesh(j),          &
+                                   reduced_full_tend(j)%dEdlon(:,move), &
+                                   state%mesh, tend%dEdlon(:,j))
         end do
         call parallel_overlay_inner_halo(state%mesh, tend%dEdlon(:,j), left_halo=.true.)
       else
@@ -315,9 +315,9 @@ contains
               reduced_full_state(j)%mf_lon_n(i,0,move) - reduced_full_state(j)%mf_lon_n(i-1,0,move) &
             ) * reduced_full_mesh (j)%vertex_lat_dist(0) / reduced_full_mesh (j)%cell_area(0)
           end do
-          call reduce_append_tend(move, reduced_full_mesh(j), &
-                                  reduced_full_tend(j)%mf_div_lon(:,move), &
-                                  state%mesh, tend%mf_div(:,j))
+          call reduce_append_array(move, reduced_full_mesh(j), &
+                                   reduced_full_tend(j)%mf_div_lon(:,move), &
+                                   state%mesh, tend%mf_div(:,j))
         end do
         call parallel_overlay_inner_halo(state%mesh, tend%mf_div(:,j), left_halo=.true.)
       else

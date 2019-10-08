@@ -183,7 +183,7 @@ contains
     integer i, j
 
     call operators_prepare(state)
-    call reduce_run(state)
+    call reduce_run(state, dt)
 
     select case (pass)
     case (all_pass)

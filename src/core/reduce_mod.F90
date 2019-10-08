@@ -17,7 +17,7 @@ module reduce_mod
   public reduced_state_type
   public reduce_init
   public reduce_run
-  public reduce_append_tend
+  public reduce_append_array
 
   public reduced_full_mesh
   public reduced_full_static
@@ -256,18 +256,19 @@ contains
 
   end subroutine reduce_init
 
-  subroutine reduce_run(state)
+  subroutine reduce_run(state, dt)
 
     type(state_type), intent(in) :: state
+    real(r8), intent(in) :: dt
 
     integer j
 
 
     do j = state%mesh%full_lat_start_idx, state%mesh%full_lat_end_idx
-      call reduce_state(j, state%mesh, state, reduced_full_mesh(j), reduced_full_state(j))
+      call reduce_state(j, state%mesh, state, reduced_full_mesh(j), reduced_full_state(j), dt)
     end do
     do j = state%mesh%half_lat_start_idx, state%mesh%half_lat_end_idx
-      call reduce_state(j, state%mesh, state, reduced_half_mesh(j), reduced_half_state(j))
+      call reduce_state(j, state%mesh, state, reduced_half_mesh(j), reduced_half_state(j), dt)
     end do
 
   end subroutine reduce_run
@@ -303,20 +304,20 @@ contains
     do i = reduced_mesh%half_lon_start_idx, reduced_mesh%half_lon_end_idx
       reduced_mesh%half_lon(i) = reduced_mesh%full_lon(reduced_mesh%full_lon_start_idx) + (i - 0.5) * reduced_mesh%dlon
     end do
-    reduced_mesh%full_lat         = raw_mesh%full_lat        (j-2:j+2)
-    reduced_mesh%half_lat         = raw_mesh%half_lat        (j-2:j+2)
-    reduced_mesh%full_sin_lat     = raw_mesh%full_sin_lat    (j-2:j+2)
-    reduced_mesh%half_sin_lat     = raw_mesh%half_sin_lat    (j-2:j+2)
-    reduced_mesh%full_cos_lat     = raw_mesh%full_cos_lat    (j-1:j+1)
-    reduced_mesh%half_cos_lat     = raw_mesh%half_cos_lat    (j-1:j+1)
-    reduced_mesh%cell_lon_dist    = raw_mesh%cell_lon_dist   (j-1:j+1) * reduce_factor
-    reduced_mesh%cell_lat_dist    = raw_mesh%cell_lat_dist   (j-1:j+1)
-    reduced_mesh%vertex_lon_dist  = raw_mesh%vertex_lon_dist (j-1:j+1) * reduce_factor
-    reduced_mesh%vertex_lat_dist  = raw_mesh%vertex_lat_dist (j-1:j+1)
+    reduced_mesh%full_lat         = raw_mesh%full_lat        (  j-2:j+2)
+    reduced_mesh%half_lat         = raw_mesh%half_lat        (  j-2:j+2)
+    reduced_mesh%full_sin_lat     = raw_mesh%full_sin_lat    (  j-2:j+2)
+    reduced_mesh%half_sin_lat     = raw_mesh%half_sin_lat    (  j-2:j+2)
+    reduced_mesh%full_cos_lat     = raw_mesh%full_cos_lat    (  j-1:j+1)
+    reduced_mesh%half_cos_lat     = raw_mesh%half_cos_lat    (  j-1:j+1)
+    reduced_mesh%cell_lon_dist    = raw_mesh%cell_lon_dist   (  j-1:j+1) * reduce_factor
+    reduced_mesh%cell_lat_dist    = raw_mesh%cell_lat_dist   (  j-1:j+1)
+    reduced_mesh%vertex_lon_dist  = raw_mesh%vertex_lon_dist (  j-1:j+1) * reduce_factor
+    reduced_mesh%vertex_lat_dist  = raw_mesh%vertex_lat_dist (  j-1:j+1)
     reduced_mesh%full_tangent_wgt = raw_mesh%full_tangent_wgt(:,j-1:j+1)
     reduced_mesh%half_tangent_wgt = raw_mesh%half_tangent_wgt(:,j-1:j+1)
-    reduced_mesh%full_f           = raw_mesh%full_f          (j-1:j+1)
-    reduced_mesh%half_f           = raw_mesh%half_f          (j-1:j+1)
+    reduced_mesh%full_f           = raw_mesh%full_f          (  j-1:j+1)
+    reduced_mesh%half_f           = raw_mesh%half_f          (  j-1:j+1)
 
 #ifdef STAGGER_V_ON_POLE
     ! Cell area
@@ -393,19 +394,23 @@ contains
     type(reduced_mesh_type), intent(in) :: reduced_mesh
     type(reduced_state_type), intent(inout) :: reduced_state
 
-    allocate(reduced_state%u       (reduced_mesh%half_lon_lb:reduced_mesh%half_lon_ub,-2:2,reduced_mesh%reduce_factor))
-    allocate(reduced_state%v       (reduced_mesh%full_lon_lb:reduced_mesh%full_lon_ub,-2:2,reduced_mesh%reduce_factor))
-    allocate(reduced_state%gd      (reduced_mesh%full_lon_lb:reduced_mesh%full_lon_ub,-2:2,reduced_mesh%reduce_factor))
-    allocate(reduced_state%pv      (reduced_mesh%half_lon_lb:reduced_mesh%half_lon_ub,-2:2,reduced_mesh%reduce_factor))
-    allocate(reduced_state%pv_lon  (reduced_mesh%half_lon_lb:reduced_mesh%half_lon_ub,-2:2,reduced_mesh%reduce_factor))
-    allocate(reduced_state%pv_lat  (reduced_mesh%full_lon_lb:reduced_mesh%full_lon_ub,-2:2,reduced_mesh%reduce_factor))
-    allocate(reduced_state%m_vtx   (reduced_mesh%half_lon_lb:reduced_mesh%half_lon_ub,-2:2,reduced_mesh%reduce_factor))
-    allocate(reduced_state%m_lon   (reduced_mesh%half_lon_lb:reduced_mesh%half_lon_ub,-2:2,reduced_mesh%reduce_factor))
-    allocate(reduced_state%m_lat   (reduced_mesh%full_lon_lb:reduced_mesh%full_lon_ub,-2:2,reduced_mesh%reduce_factor))
-    allocate(reduced_state%mf_lon_n(reduced_mesh%half_lon_lb:reduced_mesh%half_lon_ub,-2:2,reduced_mesh%reduce_factor))
-    allocate(reduced_state%mf_lat_n(reduced_mesh%half_lon_lb:reduced_mesh%half_lon_ub,-2:2,reduced_mesh%reduce_factor))
-    allocate(reduced_state%mf_lon_t(reduced_mesh%half_lon_lb:reduced_mesh%half_lon_ub,-2:2,reduced_mesh%reduce_factor))
-    allocate(reduced_state%mf_lat_t(reduced_mesh%half_lon_lb:reduced_mesh%half_lon_ub,-2:2,reduced_mesh%reduce_factor))
+    allocate(reduced_state%u        (reduced_mesh%half_lon_lb:reduced_mesh%half_lon_ub,-2:2,reduced_mesh%reduce_factor))
+    allocate(reduced_state%v        (reduced_mesh%full_lon_lb:reduced_mesh%full_lon_ub,-2:2,reduced_mesh%reduce_factor))
+    allocate(reduced_state%gd       (reduced_mesh%full_lon_lb:reduced_mesh%full_lon_ub,-2:2,reduced_mesh%reduce_factor))
+    allocate(reduced_state%pv       (reduced_mesh%half_lon_lb:reduced_mesh%half_lon_ub,-1:1,reduced_mesh%reduce_factor))
+    allocate(reduced_state%pv_lon   (reduced_mesh%half_lon_lb:reduced_mesh%half_lon_ub,-1:1,reduced_mesh%reduce_factor))
+    allocate(reduced_state%pv_lat   (reduced_mesh%full_lon_lb:reduced_mesh%full_lon_ub,-1:1,reduced_mesh%reduce_factor))
+    allocate(reduced_state%dpv_lon_t(reduced_mesh%full_lon_lb:reduced_mesh%full_lon_ub,-1:1,reduced_mesh%reduce_factor))
+    allocate(reduced_state%dpv_lat_t(reduced_mesh%half_lon_lb:reduced_mesh%half_lon_ub,-1:1,reduced_mesh%reduce_factor))
+    allocate(reduced_state%dpv_lon_n(reduced_mesh%half_lon_lb:reduced_mesh%half_lon_ub,-1:1,reduced_mesh%reduce_factor))
+    allocate(reduced_state%dpv_lat_n(reduced_mesh%full_lon_lb:reduced_mesh%full_lon_ub,-1:1,reduced_mesh%reduce_factor))
+    allocate(reduced_state%m_vtx    (reduced_mesh%half_lon_lb:reduced_mesh%half_lon_ub,-1:1,reduced_mesh%reduce_factor))
+    allocate(reduced_state%m_lon    (reduced_mesh%half_lon_lb:reduced_mesh%half_lon_ub,-1:1,reduced_mesh%reduce_factor))
+    allocate(reduced_state%m_lat    (reduced_mesh%full_lon_lb:reduced_mesh%full_lon_ub,-1:1,reduced_mesh%reduce_factor))
+    allocate(reduced_state%mf_lon_n (reduced_mesh%half_lon_lb:reduced_mesh%half_lon_ub,-1:1,reduced_mesh%reduce_factor))
+    allocate(reduced_state%mf_lat_n (reduced_mesh%half_lon_lb:reduced_mesh%half_lon_ub,-1:1,reduced_mesh%reduce_factor))
+    allocate(reduced_state%mf_lon_t (reduced_mesh%half_lon_lb:reduced_mesh%half_lon_ub,-1:1,reduced_mesh%reduce_factor))
+    allocate(reduced_state%mf_lat_t (reduced_mesh%half_lon_lb:reduced_mesh%half_lon_ub,-1:1,reduced_mesh%reduce_factor))
 
   end subroutine allocate_reduced_state
 
@@ -436,30 +441,16 @@ contains
       end do
     end do
 
-    ! ! Check results.
-    ! if (j == 88) then
-    !   i = reduced_mesh%full_lon_start_idx - 1
-    !   do raw_i = raw_mesh%full_lon_start_idx, raw_mesh%full_lon_end_idx
-    !     write(*, '(I8, F20.10)', advance='no') raw_i, raw_static%ghs(raw_i,j)
-    !     if (mod(raw_i, reduced_mesh%reduce_factor) == 1) then
-    !       i = i + 1
-    !       write(*, '(I11, F20.10)') i, reduced_static%ghs(i,0,1)
-    !     else
-    !       write(*, '(I11)') i
-    !     end if
-    !   end do
-    !   stop
-    ! end if
-
   end subroutine reduce_static
 
-  subroutine reduce_state(j, raw_mesh, raw_state, reduced_mesh, reduced_state)
+  subroutine reduce_state(j, raw_mesh, raw_state, reduced_mesh, reduced_state, dt)
 
     integer, intent(in) :: j
     type(mesh_type), intent(in) :: raw_mesh
     type(state_type), intent(in) :: raw_state
     type(reduced_mesh_type), intent(in) :: reduced_mesh
     type(reduced_state_type), intent(inout) :: reduced_state
+    real(r8), intent(in) :: dt
 
     integer buf_j, move, raw_i, i
 
@@ -482,21 +473,6 @@ contains
     do move = 1, reduced_mesh%reduce_factor
       call diagnose_2(0, move, reduced_mesh, reduced_state)
     end do
-
-    ! ! Check results.
-    ! if (j == 88) then
-    !   i = reduced_mesh%full_lon_start_idx - 1
-    !   do raw_i = raw_mesh%full_lon_start_idx, raw_mesh%full_lon_end_idx
-    !     write(*, '(I8, F20.10)', advance='no') raw_i, raw_state%mf_lon_n(raw_i,j)
-    !     if (mod(raw_i, reduced_mesh%reduce_factor) == 1) then
-    !       i = i + 1
-    !       write(*, '(I11, F20.10)') i, reduced_state%mf_lon_n(i,0,1)
-    !     else
-    !       write(*, '(I11)') i
-    !     end if
-    !   end do
-    !   stop
-    ! end if
 
   end subroutine reduce_state
 
@@ -601,23 +577,23 @@ contains
 
   end subroutine diagnose_2
 
-  subroutine reduce_append_tend(move, reduced_mesh, reduced_tend, raw_mesh, raw_tend)
+  subroutine reduce_append_array(move, reduced_mesh, reduced_array, raw_mesh, raw_array)
 
     integer, intent(in) :: move
     type(reduced_mesh_type), intent(in) :: reduced_mesh
-    real(r8), intent(in) :: reduced_tend(reduced_mesh%full_lon_lb:reduced_mesh%full_lon_ub)
+    real(r8), intent(in) :: reduced_array(reduced_mesh%full_lon_lb:reduced_mesh%full_lon_ub)
     type(mesh_type), intent(in) :: raw_mesh
-    real(r8), intent(inout) :: raw_tend(raw_mesh%full_lon_lb:raw_mesh%full_lon_ub)
+    real(r8), intent(inout) :: raw_array(raw_mesh%full_lon_lb:raw_mesh%full_lon_ub)
 
     integer i, raw_i
 
     raw_i = raw_mesh%full_lon_start_idx + move - 1
     do i = reduced_mesh%full_lon_start_idx, reduced_mesh%full_lon_end_idx
-      raw_tend(raw_i:raw_i+reduced_mesh%reduce_factor-1) = raw_tend(raw_i:raw_i+reduced_mesh%reduce_factor-1) + reduced_tend(i) / reduced_mesh%reduce_factor
+      raw_array(raw_i:raw_i+reduced_mesh%reduce_factor-1) = raw_array(raw_i:raw_i+reduced_mesh%reduce_factor-1) + reduced_array(i) / reduced_mesh%reduce_factor
       raw_i = raw_i + reduced_mesh%reduce_factor
     end do
 
-  end subroutine reduce_append_tend
+  end subroutine reduce_append_array
 
   subroutine reduced_mesh_final(this)
 
