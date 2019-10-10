@@ -10,6 +10,7 @@ module parallel_mod
   public parallel_init
   public parallel_final
   public parallel_fill_halo
+  public parallel_zero_halo
   public parallel_overlay_inner_halo
   public parallel_zonal_sum
 
@@ -27,6 +28,10 @@ module parallel_mod
     module procedure parallel_fill_halo_1d_r8_2
     module procedure parallel_fill_halo_2d_r8
   end interface parallel_fill_halo
+
+  interface parallel_zero_halo
+    module procedure parallel_zero_halo_1d_r8
+  end interface parallel_zero_halo
 
   interface parallel_zonal_sum
     module procedure paralle_zonal_sum_0d_r8
@@ -143,6 +148,23 @@ contains
     end if
 
   end subroutine parallel_fill_halo_2d_r8
+
+  subroutine parallel_zero_halo_1d_r8(mesh, array, left_halo, right_halo)
+
+    type(mesh_type), intent(in   )           :: mesh
+    real(8)        , intent(inout)           :: array(mesh%full_lon_lb:mesh%full_lon_ub)
+    logical        , intent(in   ), optional :: left_halo
+    logical        , intent(in   ), optional :: right_halo
+
+    if (merge(left_halo, .false., present(left_halo))) then
+      array(mesh%full_lon_lb:mesh%full_lon_start_idx-1) = 0.0d0
+    end if
+
+    if (merge(right_halo, .false., present(right_halo))) then
+      array(mesh%full_lon_end_idx+1:mesh%full_lon_ub) = 0.0d0
+    end if
+
+  end subroutine parallel_zero_halo_1d_r8
 
   subroutine parallel_overlay_inner_halo(mesh, array, left_halo, right_halo)
 
