@@ -183,7 +183,7 @@ contains
     integer i, j
 
     call operators_prepare(state)
-    call reduce_run(state, dt)
+    ! call reduce_run(state, dt)
 
     select case (pass)
     case (all_pass)
@@ -193,13 +193,13 @@ contains
 
       do j = state%mesh%full_lat_start_idx_no_pole, state%mesh%full_lat_end_idx_no_pole
         do i = state%mesh%half_lon_start_idx, state%mesh%half_lon_end_idx
-          tend%du(i,j) =   tend%qhv(i,j) - tend%dEdlon(i,j)
+          tend%du(i,j) =   tend%qhv(i,j) - tend%dkedlon(i,j) - tend%dpedlon(i,j)
         end do
       end do
 
       do j = state%mesh%half_lat_start_idx_no_pole, state%mesh%half_lat_end_idx_no_pole
         do i = state%mesh%full_lon_start_idx, state%mesh%full_lon_end_idx
-          tend%dv(i,j) = - tend%qhu(i,j) - tend%dEdlat(i,j)
+          tend%dv(i,j) = - tend%qhu(i,j) - tend%dkedlat(i,j) - tend%dpedlat(i,j)
         end do
       end do
 
@@ -223,23 +223,25 @@ contains
         end do
       end do
 
-      tend%dEdlon = 0.0_r8
-      tend%dEdlat = 0.0_r8
-      tend%mf_div = 0.0_r8
-      tend%dgd = 0.0_r8
+      tend%dkedlon = 0.0_r8
+      tend%dkedlat = 0.0_r8
+      tend%dpedlon = 0.0_r8
+      tend%dpedlat = 0.0_r8
+      tend%mf_div  = 0.0_r8
+      tend%dgd     = 0.0_r8
     case (fast_pass)
       call energy_gradient_operator(static, state, tend)
       call mass_flux_divergence_operator(state, tend)
 
       do j = state%mesh%full_lat_start_idx_no_pole, state%mesh%full_lat_end_idx_no_pole
         do i = state%mesh%half_lon_start_idx, state%mesh%half_lon_end_idx
-          tend%du(i,j) = - tend%dEdlon(i,j)
+          tend%du(i,j) = - tend%dkedlon(i,j) - tend%dpedlon(i,j)
         end do
       end do
 
       do j = state%mesh%half_lat_start_idx_no_pole, state%mesh%half_lat_end_idx_no_pole
         do i = state%mesh%full_lon_start_idx, state%mesh%full_lon_end_idx
-          tend%dv(i,j) = - tend%dEdlat(i,j)
+          tend%dv(i,j) = - tend%dkedlat(i,j) - tend%dpedlon(i,j)
         end do
       end do
 

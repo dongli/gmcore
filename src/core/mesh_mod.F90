@@ -181,15 +181,15 @@ contains
     allocate(this%half_lon_deg       (this%half_lon_lb:this%half_lon_ub)); this%half_lon_deg        = inf
     allocate(this%full_lat_deg       (this%full_lat_lb:this%full_lat_ub)); this%full_lat_deg        = inf
     allocate(this%half_lat_deg       (this%half_lat_lb:this%half_lat_ub)); this%half_lat_deg        = inf
-    allocate(this%cell_area          (this%full_lat_lb:this%full_lat_ub)); this%cell_area           = inf
-    allocate(this%lon_edge_area      (this%full_lat_lb:this%full_lat_ub)); this%lon_edge_area       = inf
-    allocate(this%lon_edge_left_area (this%full_lat_lb:this%full_lat_ub)); this%lon_edge_left_area  = inf
-    allocate(this%lon_edge_right_area(this%full_lat_lb:this%full_lat_ub)); this%lon_edge_right_area = inf
-    allocate(this%lat_edge_area      (this%half_lat_lb:this%half_lat_ub)); this%lat_edge_area       = inf
-    allocate(this%lat_edge_up_area   (this%half_lat_lb:this%half_lat_ub)); this%lat_edge_up_area    = inf
-    allocate(this%lat_edge_down_area (this%half_lat_lb:this%half_lat_ub)); this%lat_edge_down_area  = inf
-    allocate(this%vertex_area        (this%half_lat_lb:this%half_lat_ub)); this%vertex_area         = inf
-    allocate(this%subcell_area     (2,this%full_lat_lb:this%full_lat_ub)); this%subcell_area        = inf
+    allocate(this%cell_area          (this%full_lat_lb:this%full_lat_ub)); this%cell_area           = 0.0_r8
+    allocate(this%lon_edge_area      (this%full_lat_lb:this%full_lat_ub)); this%lon_edge_area       = 0.0_r8
+    allocate(this%lon_edge_left_area (this%full_lat_lb:this%full_lat_ub)); this%lon_edge_left_area  = 0.0_r8
+    allocate(this%lon_edge_right_area(this%full_lat_lb:this%full_lat_ub)); this%lon_edge_right_area = 0.0_r8
+    allocate(this%lat_edge_area      (this%half_lat_lb:this%half_lat_ub)); this%lat_edge_area       = 0.0_r8
+    allocate(this%lat_edge_up_area   (this%half_lat_lb:this%half_lat_ub)); this%lat_edge_up_area    = 0.0_r8
+    allocate(this%lat_edge_down_area (this%half_lat_lb:this%half_lat_ub)); this%lat_edge_down_area  = 0.0_r8
+    allocate(this%vertex_area        (this%half_lat_lb:this%half_lat_ub)); this%vertex_area         = 0.0_r8
+    allocate(this%subcell_area     (2,this%full_lat_lb:this%full_lat_ub)); this%subcell_area        = 0.0_r8
     allocate(this%cell_lon_dist      (this%full_lat_lb:this%full_lat_ub)); this%cell_lon_dist       = inf
     allocate(this%cell_lat_dist      (this%half_lat_lb:this%half_lat_ub)); this%cell_lat_dist       = inf
     allocate(this%vertex_lon_dist    (this%half_lat_lb:this%half_lat_ub)); this%vertex_lon_dist     = inf
@@ -284,7 +284,7 @@ contains
     ! Ensure the values of cos_lat and sin_lat are expected at the Poles.
 #ifdef STAGGER_V_ON_POLE
     if (this%has_south_pole()) then
-      this%half_cos_lat(this%half_lat_start_idx) = 0.0_r8
+      this%half_cos_lat(this%half_lat_start_idx) =  0.0_r8
       this%half_sin_lat(this%half_lat_start_idx) = -1.0_r8
     end if
     if (this%has_north_pole()) then
@@ -293,7 +293,7 @@ contains
     end if
 #else
     if (this%has_south_pole()) then
-      this%full_cos_lat(this%full_lat_start_idx) = 0.0_r8
+      this%full_cos_lat(this%full_lat_start_idx) =  0.0_r8
       this%full_sin_lat(this%full_lat_start_idx) = -1.0_r8
     end if
     if (this%has_north_pole()) then
