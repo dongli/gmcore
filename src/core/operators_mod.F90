@@ -269,22 +269,22 @@ contains
         tend%dpedlon(:,j) = 0.0_r8
         do move = 1, reduced_full_mesh(j)%reduce_factor
           do i = reduced_full_mesh(j)%full_lon_start_idx, reduced_full_mesh(j)%full_lon_end_idx
-            reduced_full_tend(j)%dpedlon(i) = (                                                &
+            reduced_full_tend(j)%dpedlon(i) = (                                               &
               reduced_full_state (j)%gd (i+1,0,move) - reduced_full_state (j)%gd (i,0,move) + &
               reduced_full_static(j)%ghs(i+1,0,move) - reduced_full_static(j)%ghs(i,0,move)   &
-            ) / reduced_full_mesh(j)%cell_lon_dist(0)
+            ) / reduced_full_mesh(j)%de_lon(0)
           end do
-          call reduce_append_array(move, reduced_full_mesh(j) , &
+          call reduce_append_array(move, reduced_full_mesh(j)  , &
                                    reduced_full_tend(j)%dpedlon, &
                                    state%mesh, tend%dpedlon(:,j))
         end do
         call parallel_overlay_inner_halo(state%mesh, tend%dpedlon(:,j), left_halo=.true.)
       else
         do i = state%mesh%half_lon_start_idx, state%mesh%half_lon_end_idx
-          tend%dpedlon(i,j) = (                    &
+          tend%dpedlon(i,j) = (                   &
             state %gd (i+1,j) - state %gd (i,j) + &
             static%ghs(i+1,j) - static%ghs(i,j)   &
-          ) / state%mesh%cell_lon_dist(j)
+          ) / state%mesh%de_lon(j)
         end do
       end if
     end do
@@ -293,7 +293,7 @@ contains
     !                       Zonal kinetic energy gradient
     do j = state%mesh%full_lat_start_idx_no_pole, state%mesh%full_lat_end_idx_no_pole
       do i = state%mesh%half_lon_start_idx, state%mesh%half_lon_end_idx
-        tend%dkedlon(i,j) = (state%ke_cell(i+1,j) - state%ke_cell(i,j)) / state%mesh%cell_lon_dist(j)
+        tend%dkedlon(i,j) = (state%ke_cell(i+1,j) - state%ke_cell(i,j)) / state%mesh%de_lon(j)
       end do
     end do
 
@@ -304,13 +304,13 @@ contains
 #ifdef STAGGER_V_ON_POLE
         tend%dpedlat(i,j) = (state %gd (i,j) - state %gd (i,j-1) + &
                              static%ghs(i,j) - static%ghs(i,j-1)   &
-                            ) / state%mesh%cell_lat_dist(j)
-        tend%dkedlat(i,j) = (state%ke_cell(i,j) - state%ke_cell(i,j-1)) / state%mesh%cell_lat_dist(j)
+                            ) / state%mesh%de_lat(j)
+        tend%dkedlat(i,j) = (state%ke_cell(i,j) - state%ke_cell(i,j-1)) / state%mesh%de_lat(j)
 #else
         tend%dpedlat(i,j) = (state %gd (i,j+1) - state %gd (i,j) + &
                              static%ghs(i,j+1) - static%ghs(i,j)   &
-                            ) / state%mesh%cell_lat_dist(j)
-        tend%dkedlat(i,j) = (state%ke_cell(i,j+1) - state%ke_cell(i,j)) / state%mesh%cell_lat_dist(j)
+                            ) / state%mesh%de_lat(j)
+        tend%dkedlat(i,j) = (state%ke_cell(i,j+1) - state%ke_cell(i,j)) / state%mesh%de_lat(j)
 #endif
       end do
     end do
@@ -334,7 +334,7 @@ contains
           do i = reduced_full_mesh(j)%full_lon_start_idx, reduced_full_mesh(j)%full_lon_end_idx
             reduced_full_tend(j)%mf_div_lon(i) = (                                                  &
               reduced_full_state(j)%mf_lon_n(i,0,move) - reduced_full_state(j)%mf_lon_n(i-1,0,move) &
-            ) * reduced_full_mesh (j)%vertex_lat_dist(0) / reduced_full_mesh (j)%cell_area(0)
+            ) * reduced_full_mesh (j)%le_lon(0) / reduced_full_mesh (j)%cell_area(0)
           end do
           call reduce_append_array(move, reduced_full_mesh(j),      &
                                    reduced_full_tend(j)%mf_div_lon, &
@@ -345,7 +345,7 @@ contains
         do i = state%mesh%full_lon_start_idx, state%mesh%full_lon_end_idx
           tend%mf_div(i,j) = (                          &
             state%mf_lon_n(i,j) - state%mf_lon_n(i-1,j) &
-          ) * mesh %vertex_lat_dist(j) / mesh %cell_area(j)
+          ) * mesh %le_lon(j) / mesh %cell_area(j)
         end do
       end if
     end do
@@ -356,11 +356,11 @@ contains
       do i = state%mesh%full_lon_start_idx, state%mesh%full_lon_end_idx
         tend%mf_div(i,j) = tend%mf_div(i,j) + (                                  &
 #ifdef STAGGER_V_ON_POLE
-                            (state%mf_lat_n(i,j+1) * mesh%vertex_lon_dist(j+1) - &
-                             state%mf_lat_n(i,j  ) * mesh%vertex_lon_dist(j  ))  &
+                            (state%mf_lat_n(i,j+1) * mesh%le_lat(j+1) - &
+                             state%mf_lat_n(i,j  ) * mesh%le_lat(j  ))  &
 #else
-                            (state%mf_lat_n(i,j  ) * mesh%vertex_lon_dist(j  ) - &
-                             state%mf_lat_n(i,j-1) * mesh%vertex_lon_dist(j-1))  &
+                            (state%mf_lat_n(i,j  ) * mesh%le_lat(j  ) - &
+                             state%mf_lat_n(i,j-1) * mesh%le_lat(j-1))  &
 #endif
                            ) / mesh%cell_area(j)
       end do
@@ -374,7 +374,7 @@ contains
         pole = pole + state%mf_lat_n(i,j)
       end do
       call parallel_zonal_sum(pole)
-      pole = pole * mesh%vertex_lon_dist(j) / state%mesh%num_full_lon / mesh%cell_area(j)
+      pole = pole * mesh%le_lat(j) / state%mesh%num_full_lon / mesh%cell_area(j)
       do i = state%mesh%full_lon_start_idx, state%mesh%full_lon_end_idx
         tend%mf_div(i,j) = pole
       end do
@@ -386,7 +386,7 @@ contains
         pole = pole - state%mf_lat_n(i,j-1)
       end do
       call parallel_zonal_sum(pole)
-      pole = pole * mesh%vertex_lon_dist(j-1) / state%mesh%num_full_lon / mesh%cell_area(j)
+      pole = pole * mesh%le_lat(j-1) / state%mesh%num_full_lon / mesh%cell_area(j)
       do i = state%mesh%full_lon_start_idx, state%mesh%full_lon_end_idx
         tend%mf_div(i,j) = pole
       end do

@@ -55,10 +55,10 @@ module reduce_mod
     real(r8), dimension(  -1:1) :: lat_edge_down_area
     real(r8), dimension(  -1:1) :: vertex_area
     real(r8), dimension(2,-1:1) :: subcell_area
-    real(r8), dimension(  -1:1) :: cell_lon_dist
-    real(r8), dimension(  -1:1) :: cell_lat_dist
-    real(r8), dimension(  -1:1) :: vertex_lon_dist
-    real(r8), dimension(  -1:1) :: vertex_lat_dist
+    real(r8), dimension(  -1:1) :: de_lon
+    real(r8), dimension(  -1:1) :: de_lat
+    real(r8), dimension(  -1:1) :: le_lat
+    real(r8), dimension(  -1:1) :: le_lon
     real(r8), dimension(2,-1:1) :: full_tangent_wgt
     real(r8), dimension(2,-1:1) :: half_tangent_wgt
     real(r8), dimension(  -1:1) :: full_f
@@ -107,8 +107,9 @@ module reduce_mod
   type(reduced_state_type), allocatable :: reduced_half_state(:)
 
   type reduced_tend_type
-    real(r8), allocatable, dimension(:,:) :: mf_div_lon
-    real(r8), allocatable, dimension(:,:) :: dEdlon
+    real(r8), allocatable, dimension(:) :: mf_div_lon
+    real(r8), allocatable, dimension(:) :: dpedlon
+    real(r8), allocatable, dimension(:) :: dkedlon
   contains
     final :: reduced_tend_final
   end type reduced_tend_type
@@ -314,10 +315,10 @@ contains
     reduced_mesh%half_sin_lat     = raw_mesh%half_sin_lat    (  j-2:j+2)
     reduced_mesh%full_cos_lat     = raw_mesh%full_cos_lat    (  j-1:j+1)
     reduced_mesh%half_cos_lat     = raw_mesh%half_cos_lat    (  j-1:j+1)
-    reduced_mesh%cell_lon_dist    = raw_mesh%cell_lon_dist   (  j-1:j+1) * reduce_factor
-    reduced_mesh%cell_lat_dist    = raw_mesh%cell_lat_dist   (  j-1:j+1)
-    reduced_mesh%vertex_lon_dist  = raw_mesh%vertex_lon_dist (  j-1:j+1) * reduce_factor
-    reduced_mesh%vertex_lat_dist  = raw_mesh%vertex_lat_dist (  j-1:j+1)
+    reduced_mesh%de_lon    = raw_mesh%de_lon   (  j-1:j+1) * reduce_factor
+    reduced_mesh%de_lat    = raw_mesh%de_lat   (  j-1:j+1)
+    reduced_mesh%le_lat  = raw_mesh%le_lat (  j-1:j+1) * reduce_factor
+    reduced_mesh%le_lon  = raw_mesh%le_lon (  j-1:j+1)
     reduced_mesh%full_tangent_wgt = raw_mesh%full_tangent_wgt(:,j-1:j+1)
     reduced_mesh%half_tangent_wgt = raw_mesh%half_tangent_wgt(:,j-1:j+1)
     reduced_mesh%full_f           = raw_mesh%full_f          (  j-1:j+1)
@@ -423,8 +424,9 @@ contains
     type(reduced_mesh_type), intent(in) :: reduced_mesh
     type(reduced_tend_type), intent(inout) :: reduced_tend
 
-    allocate(reduced_tend%mf_div_lon(reduced_mesh%full_lon_lb:reduced_mesh%full_lon_ub,reduced_mesh%reduce_factor))
-    allocate(reduced_tend%dEdlon    (reduced_mesh%full_lon_lb:reduced_mesh%full_lon_ub,reduced_mesh%reduce_factor))
+    allocate(reduced_tend%mf_div_lon(reduced_mesh%full_lon_lb:reduced_mesh%full_lon_ub))
+    allocate(reduced_tend%dpedlon   (reduced_mesh%full_lon_lb:reduced_mesh%full_lon_ub))
+    allocate(reduced_tend%dkedlon   (reduced_mesh%full_lon_lb:reduced_mesh%full_lon_ub))
 
   end subroutine allocate_reduced_tend
 
@@ -535,10 +537,10 @@ contains
       reduced_state%mf_lat_n(i,buf_j,move) = reduced_state%m_lat(i,buf_j,move) * reduced_state%v(i,buf_j,move)
       ! PV on vertex
 #ifdef STAGGER_V_ON_POLE
-      reduced_state%pv(i,buf_j,move) = ((reduced_state%u(i  ,buf_j-1,move) * reduced_mesh%cell_lon_dist(buf_j-1) - &
-                                         reduced_state%u(i  ,buf_j  ,move) * reduced_mesh%cell_lon_dist(buf_j  ) + &
-                                         reduced_state%v(i+1,buf_j  ,move) * reduced_mesh%cell_lat_dist(buf_j  ) - &
-                                         reduced_state%v(i  ,buf_j  ,move) * reduced_mesh%cell_lat_dist(buf_j  )   &
+      reduced_state%pv(i,buf_j,move) = ((reduced_state%u(i  ,buf_j-1,move) * reduced_mesh%de_lon(buf_j-1) - &
+                                         reduced_state%u(i  ,buf_j  ,move) * reduced_mesh%de_lon(buf_j  ) + &
+                                         reduced_state%v(i+1,buf_j  ,move) * reduced_mesh%de_lat(buf_j  ) - &
+                                         reduced_state%v(i  ,buf_j  ,move) * reduced_mesh%de_lat(buf_j  )   &
                                         ) / reduced_mesh%vertex_area(buf_j) + reduced_mesh%half_f(buf_j)        &
                                        ) / reduced_state%m_vtx(i,buf_j,move)
 #else
@@ -641,7 +643,8 @@ contains
     type(reduced_tend_type), intent(inout) :: this
 
     if (allocated(this%mf_div_lon)) deallocate(this%mf_div_lon)
-    if (allocated(this%dEdlon    )) deallocate(this%dEdlon    )
+    if (allocated(this%dpedlon   )) deallocate(this%dpedlon   )
+    if (allocated(this%dkedlon   )) deallocate(this%dkedlon   )
 
   end subroutine reduced_tend_final
 
